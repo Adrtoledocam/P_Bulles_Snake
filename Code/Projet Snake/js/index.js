@@ -61,6 +61,7 @@ function GameEngine(){
         checkCollision();
     
         let result = isGameOver();
+
         if(result){
             inGame = false
             inGameOver = true;
@@ -116,6 +117,7 @@ function clearScreen(){
 }
 
 function drawSnake(){
+    //PauseMode Doesn't finish
     if (inPause){
         
         ctx.fillStyle="orange";
