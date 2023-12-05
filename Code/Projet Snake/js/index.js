@@ -26,7 +26,10 @@ let snakeHeadY = 10;
 
 //Snake Speed
 let xspeed = 0;
-let yspeed = 0; 
+let yspeed = 0;
+let accelerate = 1; 
+let saveSpeed  = [];
+let inMove = false;
   
 //Snake tail 
 
@@ -54,22 +57,30 @@ const btnRight = document.querySelector('.rightArrow')
 const btnStart = document.querySelector('.startBtn')
 const btnSelect = document.querySelector('.selectBtn')
 
+let startPressed = false;
+let selectPressed = false;
+let count = 0
+
+
 //GameEngine : update, check position adn colission, and draw objects
 function GameEngine(){
-
     if(!startingGame)
     {
         Menu();
     }
     else{
-        inMenu = false;
-        inGame = true;
-
+         
         //clearScreen();
+        /*
+        inMenu = false;
+        inGame = true; 
 
         snakePosition();    
         checkCollision();
-    
+
+        clearScreen();
+
+
         let result = isGameOver();
 
         if(result){
@@ -77,12 +88,53 @@ function GameEngine(){
             inGameOver = true;
             startingGame = false;
             return;
-        }        
+        }       
+        clearScreen(); 
         drawSnake();
         drawFood();
         drawScore();    
+        */
+
+        
+
+        inMenu = false;
+        inGame = true; 
+
+        snakePosition();    
+        checkCollision();
+
+        //clearScreen();
+        let result = isGameOver();
+
+        if(result){
+            inGame = false
+            inGameOver = true;
+            startingGame = false;
+            return;
+        }       
+        clearScreen(); 
+        drawSnake();
+        drawFood();
+        drawScore();   
+        //gameLoop()
     }
     setTimeout(GameEngine, 1000/speedUpdate);
+
+}
+function gameLoop(){
+    if (count>4){
+        clearScreen(); 
+
+        drawSnake();
+        drawFood();
+        drawScore();   
+        requestAnimationFrame(gameLoop)
+
+        count = 0;
+    }
+    else{
+        count++
+    }
 }
 
 function Menu()
@@ -93,10 +145,10 @@ function Menu()
 
     //Message Welcome
     ctx.fillStyle = "white";
-    ctx.font="25px arial";
-    ctx.fillText("Welcome to JSnake", canvas.clientWidth/4.5, canvas.clientHeight/2);
-    ctx.font="15px arial";
-    ctx.fillText("Press Enter or Space to start", canvas.clientWidth/4.5, canvas.clientHeight/1.75)
+    ctx.font="25px 'Press Start 2P'";
+    ctx.fillText("J-Snake", canvas.clientWidth/4+7, canvas.clientHeight/2);
+    ctx.font="13px 'Press Start 2P'";
+    ctx.fillText("Press START or Enter", canvas.clientWidth/5.5 , canvas.clientHeight/1.75)
     
     //Initialization variables
     snakeTail = [];
@@ -118,41 +170,37 @@ function clearScreen(){
     ctx.fillRect(0,0,canvas.clientWidth, canvas.clientHeight);
 }
 
+btnSelect.addEventListener('click', function(){
+    startPressed = true;
+    gameEnterBtn();
+
+})
+
 function drawSnake(){
-    //PauseMode Doesn't finish
     if (inPause){        
         ctx.fillStyle="orange";
-        //Bucle for draw the snake tail
-        for (let i=0; i<snakeTail.length;i++){
-            ctx.fillRect(tails=snakeTail[i].x *tileCount, tails=snakeTail[i].y*tileCount, titleSize, titleSize)
-        }
-        //snakeTail.push(new SnakeTailPart(snakeHeadX, snakeHeadY));
+        
+        snakeTail.forEach(function(SnakeTailPart, i){
+            ctx.fillRect(SnakeTailPart = snakeTail[i].x *tileCount, SnakeTailPart = snakeTail[i].y*tileCount, titleSize, titleSize)
+
+        })
         if (snakeTail.length>tailLength){
-            snakeTail.shift();
-        }    
+            snakeTail.pop();
+        }
+
     }
     else{
-        /*
         ctx.fillStyle="orange";
-        //Bucle for draw the snake tail
-        for (let i=0; i<snakeTail.length;i++){
-            ctx.fillRect(tails=snakeTail[i].x *tileCount, tails=snakeTail[i].y*tileCount, titleSize, titleSize)
-        }
-        snakeTail.push(new SnakeTailPart(snakeHeadX, snakeHeadY));
-        if (snakeTail.length>tailLength){
-            snakeTail.shift();
-        }
-        */
+        if(inMove){
+            snakeTail.unshift(new SnakeTailPart(snakeHeadX, snakeHeadY));
 
-        for (let i=0; i<snakeTail.length;i++){
-            ctx.fillRect(tails=snakeTail[i].x *tileCount, tails=snakeTail[i].y*tileCount, titleSize, titleSize)
-        }
-        //snakeTail.push(new SnakeTailPart(snakeHeadX, snakeHeadY));
-        if (snakeTail.length>tailLength){
-            snakeTail.shift();
-        } 
-        console.log(snakeTail.length)
-
+            if (snakeTail.length>tailLength){
+                snakeTail.pop();
+            }
+        }         
+        snakeTail.forEach(function(SnakeTailPart, i){
+            ctx.fillRect(SnakeTailPart = snakeTail[i].x *tileCount, SnakeTailPart = snakeTail[i].y*tileCount, titleSize, titleSize)
+        })
     }        
     //Draw the snake haed
     ctx.fillStyle="yellow";
@@ -167,8 +215,8 @@ function drawFood(){
 //Display Score
 function drawScore(){
     ctx.fillStyle="white";
-    ctx.font ="10px ariel";
-    ctx.fillText("Score : " + score, canvas.clientWidth-50,10);
+    ctx.font ="20px 'Press Start 2P'";
+    ctx.fillText("Score : " + score, canvas.clientWidth-canvas.clientWidth/2-100 ,30);
 }
 
 //Input controls function
@@ -195,43 +243,26 @@ function keyDown(event)
     }
     
 
-   if (event.keyCode==32 ||event.keyCode==13){
-
-    if (inMenu){
-        startingGame = true;
-    }
-    if(inGame){
-        //Pause Condition
-        if (!inPause){
-            setTimeout(pauseMode, 1)
-            inPause = true;
-        }
-        else{
-            inPause = false;
-            //speedUpdate = 6;
-        }
-    }
-    if (inGameOver)
-    {
-        clearScreen();
-        GameEngine();
-    }
+   if (event.keyCode==32 ||event.keyCode==13 ){
+    gameEnterBtn();
    }
 }
 function pauseMode(){
-    clearScreen();
+    //clearScreen();
+    saveSpeed[0]=xspeed
+    saveSpeed[1]=yspeed
     xspeed = 0;
     yspeed = 0;
+    inMove = false;
 }
 //Collision system for the food 
 function checkCollision(){
-    for (let i=0; i<snakeTail.length;i++){        
+    snakeTail.forEach(function(SnakeTailPart, i){
         if(snakeTail[i].x==foodX && snakeTail[i].y ==foodY){
             foodX = Math.floor(Math.random()*tileCount);
             foodY = Math.floor(Math.random()*tileCount);
-            break;
         }
-    }
+    })
     if (foodX == snakeHeadX && foodY == snakeHeadY)
     {
         foodX = Math.floor(Math.random()*tileCount);
@@ -243,8 +274,8 @@ function checkCollision(){
 
 //Update snake position
 function snakePosition(){
-    snakeHeadX+=xspeed;
-    snakeHeadY+=yspeed;
+    snakeHeadX+= accelerate*xspeed;
+    snakeHeadY+=accelerate*yspeed;
 }
 
 //GameOver system. Is active when the snake touch a wall or himself
@@ -267,20 +298,19 @@ function isGameOver(){
         gameOver=true;
     }
     //Detection if is toching himself
-    for (let i=0; i<snakeTail.length;i++){
-        
+    snakeTail.forEach(function(SnakeTailPart, i){
         if(snakeTail[i].x==snakeHeadX && snakeTail[i].y ==snakeHeadY){
             gameOver=true;
-            break;
         }
-    }
+    })
     //Message "Game Over"
     if (gameOver){
+        drawScore();
         ctx.fillStyle = "white";
-        ctx.font="50px arial";
-        ctx.fillText("Game Over !", canvas.clientWidth/5.75, canvas.clientHeight/2);
-        ctx.font="15px arial";
-        ctx.fillText("Press Enter or Space to play again !", canvas.clientWidth/5.75, canvas.clientHeight/1.75);
+        ctx.font="40px 'Press Start 2P'";
+        ctx.fillText("Game Over!",8, canvas.clientHeight/2);
+        ctx.font="11px 'Press Start 2P'";
+        ctx.fillText("Press START or ENTER to play again!", 12, canvas.clientHeight/1.75);
     }
     return gameOver;
 }
@@ -300,10 +330,49 @@ btnRight.addEventListener('click', function(){
     movement(3)
 
 })
+btnStart.addEventListener('click', function(){
+    startPressed = true;
+    gameEnterBtn();
+
+})
+btnSelect.addEventListener('click', function(){
+    startPressed = true;
+    gameEnterBtn();
+
+})
+
+function gameEnterBtn (){
+    if (inMenu){
+        clearScreen();
+        startingGame = true;
+    }
+    if(inGame){
+        //Pause Condition
+        if (!inPause){
+            setTimeout(pauseMode, 1)
+            inPause = true;
+        }
+        else{
+            inPause = false;
+            xspeed = saveSpeed[0]
+            yspeed = saveSpeed[1]
+            inMove = true;
+            //speedUpdate = 6;
+        }
+
+    }
+    if (inGameOver)
+    {
+        clearScreen();
+        GameEngine();
+
+    }
+}
 
 
 function movement (direction){
     //Up
+    inMove = true;
     if (direction == 0){
         if(yspeed==1)
         return;
@@ -330,6 +399,7 @@ function movement (direction){
         xspeed = 1;
         yspeed = 0;
     }
+
 }
 
 GameEngine();
