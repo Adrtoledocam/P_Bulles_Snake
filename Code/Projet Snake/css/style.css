@@ -6,9 +6,77 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
-canvas{
-    box-shadow: black 20px 10px 50px;
     background-color: black;
 }
+canvas{
+    position: absolute;
+    box-shadow: green  0px 0px 100px;
+    background-color: green;
+    margin-top: -4.5%;
+    width: 21%;
+ 
+}
+img.imgGameBoy{
+    width: 75%;
+}
 
+button{
+    position: absolute;
+
+}
+button.upArrow{
+    background-color: transparent;
+    border-color: transparent;
+
+    top : 26.5%;
+    left: 20.75%;
+    width: 3.5%;
+    height: 7%;
+
+}
+button.leftArrow{
+    background-color: transparent;
+    border-color: transparent;
+
+    top : 33%;
+    left: 17.5%;
+    width: 3.5%;
+    height: 7%;
+
+    /*height: 60px;*/
+
+}
+button.rightArrow{
+    background-color: transparent;
+    border-color: transparent;
+
+    top : 33%;
+    left: 24%;
+    width: 3.5%;
+    height: 7%;
+}
+button.downArrow{
+    background-color: transparent;
+    top : 40%;
+    left: 20.75%;
+    width: 3.5%;
+    height: 7%;
+    border-color: transparent;
+}
+button.startBtn{
+    background-color: yellow;
+    top : 55%;
+    left: 26%;
+    width: 3%;
+    height: 6%;
+    border-radius: 50%;
+}
+button.selectBtn{
+    background-color: green;
+    top : 64%;
+    left: 26%;
+    width: 3%;
+    height: 6%;
+    border-radius: 50%;
+
+}

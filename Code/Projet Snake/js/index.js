@@ -45,6 +45,15 @@ let foodY = Math.floor(Math.random()*tileCount);
 //Score
 let score = 0;
 
+
+//Button creation
+const btnUp = document.querySelector('.upArrow')
+const btnDown = document.querySelector('.downArrow')
+const btnLeft = document.querySelector('.leftArrow')
+const btnRight = document.querySelector('.rightArrow') 
+const btnStart = document.querySelector('.startBtn')
+const btnSelect = document.querySelector('.selectBtn')
+
 //GameEngine : update, check position adn colission, and draw objects
 function GameEngine(){
 
@@ -55,7 +64,8 @@ function GameEngine(){
     else{
         inMenu = false;
         inGame = true;
-        clearScreen();
+
+        //clearScreen();
 
         snakePosition();    
         checkCollision();
@@ -67,18 +77,12 @@ function GameEngine(){
             inGameOver = true;
             startingGame = false;
             return;
-        }
-    
-    
+        }        
         drawSnake();
         drawFood();
-        drawScore();
-
-
-    
+        drawScore();    
     }
     setTimeout(GameEngine, 1000/speedUpdate);
-
 }
 
 function Menu()
@@ -105,21 +109,18 @@ function Menu()
     yspeed = 0;
     xspeed = 0;
 
-    score = 0;
-    
-
+    score = 0;    
 }
 
 //Clear the board game
 function clearScreen(){
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'green';
     ctx.fillRect(0,0,canvas.clientWidth, canvas.clientHeight);
 }
 
 function drawSnake(){
     //PauseMode Doesn't finish
-    if (inPause){
-        
+    if (inPause){        
         ctx.fillStyle="orange";
         //Bucle for draw the snake tail
         for (let i=0; i<snakeTail.length;i++){
@@ -128,11 +129,10 @@ function drawSnake(){
         //snakeTail.push(new SnakeTailPart(snakeHeadX, snakeHeadY));
         if (snakeTail.length>tailLength){
             snakeTail.shift();
-        }
-        
-
+        }    
     }
     else{
+        /*
         ctx.fillStyle="orange";
         //Bucle for draw the snake tail
         for (let i=0; i<snakeTail.length;i++){
@@ -142,11 +142,20 @@ function drawSnake(){
         if (snakeTail.length>tailLength){
             snakeTail.shift();
         }
-    }
-    
-    
+        */
+
+        for (let i=0; i<snakeTail.length;i++){
+            ctx.fillRect(tails=snakeTail[i].x *tileCount, tails=snakeTail[i].y*tileCount, titleSize, titleSize)
+        }
+        //snakeTail.push(new SnakeTailPart(snakeHeadX, snakeHeadY));
+        if (snakeTail.length>tailLength){
+            snakeTail.shift();
+        } 
+        console.log(snakeTail.length)
+
+    }        
     //Draw the snake haed
-    ctx.fillStyle="green";
+    ctx.fillStyle="yellow";
     ctx.fillRect(snakeHeadX*tileCount, snakeHeadY*tileCount, titleSize, titleSize);
 }
 //Display food 
@@ -169,31 +178,19 @@ function keyDown(event)
     if(!inPause){
         //Up with arrow or W
     if(event.keyCode==38 || event.keyCode==87){
-        if(yspeed==1)
-        return;
-         xspeed = 0;
-         yspeed = -1;
+        movement(0)
     }
     //Down with arrow or S
     if(event.keyCode==40 || event.keyCode==83){
-        if(yspeed==-1)
-        return;
-        xspeed = 0;
-        yspeed = 1;
+        movement(1)
    }
     //Left with arrow or A
     if(event.keyCode==37 || event.keyCode==65){
-        if(xspeed==1)
-        return;
-        xspeed = -1;
-        yspeed = 0;
+        movement(2)
    }
     //Right with arrow or D
     if(event.keyCode==39|| event.keyCode==68){
-        if(xspeed==-1)
-        return;
-        xspeed = 1;
-        yspeed = 0;
+        movement(3)
    }
     }
     
@@ -279,18 +276,61 @@ function isGameOver(){
     }
     //Message "Game Over"
     if (gameOver){
-
         ctx.fillStyle = "white";
         ctx.font="50px arial";
         ctx.fillText("Game Over !", canvas.clientWidth/5.75, canvas.clientHeight/2);
         ctx.font="15px arial";
         ctx.fillText("Press Enter or Space to play again !", canvas.clientWidth/5.75, canvas.clientHeight/1.75);
-
     }
-
     return gameOver;
 }
 
+//Button Actions
+btnUp.addEventListener('click', function(){
+    movement(0)
+})
+btnDown.addEventListener('click', function(){
+    movement(1)
+})
+btnLeft.addEventListener('click', function(){
+    movement(2)
+
+})
+btnRight.addEventListener('click', function(){
+    movement(3)
+
+})
+
+
+function movement (direction){
+    //Up
+    if (direction == 0){
+        if(yspeed==1)
+        return;
+        xspeed = 0;
+        yspeed = -1;
+    }
+    //Down
+    else if(direction == 1)
+    {
+        if(yspeed==-1)
+        return;
+        xspeed = 0;
+        yspeed = 1;
+    }
+    else if(direction==2){
+        if(xspeed==1)
+        return;
+        xspeed = -1;
+        yspeed = 0;
+    }
+    else {
+        if(xspeed==-1)
+        return;
+        xspeed = 1;
+        yspeed = 0;
+    }
+}
 
 GameEngine();
 //Menu();
