@@ -3,7 +3,6 @@
 //Date : 7.11.2023
 //Description : Réalisation de Snake Game en JavaScript 
 
-
 //Initialisation du canevas et de la carte 2D
 const canvas = document.getElementById('game'); 
 const ctx = canvas.getContext('2d');
@@ -38,7 +37,6 @@ let inMove = false;
 let canTouch = false;
   
 //Snake tail 
-
 let snakeTail = [];
 let tailLength ;
 class SnakeTailPart {
@@ -54,8 +52,7 @@ let foodY = Math.floor(Math.random()*tileCount);
 //Score
 let score = 0;
 
-
-//Button creation
+//Button creation for Nokia
 const btnNokia= document.querySelector('.NokiaButtons')
 const btnUp = document.querySelector('.upArrow')
 const btnDown = document.querySelector('.downArrow')
@@ -63,8 +60,8 @@ const btnLeft = document.querySelector('.leftArrow')
 const btnRight = document.querySelector('.rightArrow') 
 const btnStart = document.querySelector('.startBtn')
 const btnB = document.querySelector('.Bbtn')
-//const btnSelect = document.querySelector('.selectBtn')
 
+//Button creation for GameBoy
 const btnGameBoy= document.querySelector('.GameBoyButtons')
 const btnUpGB = document.querySelector('.upArrowGB')
 const btnDownGB = document.querySelector('.downArrowGB')
@@ -73,30 +70,29 @@ const btnRightGB = document.querySelector('.rightArrowGB')
 const btnStartGB = document.querySelector('.startBtnGB')
 const btnBGB = document.querySelector('.BbtnGB')
 const btnAGB = document.querySelector('.AbtnGB')
-//const btnSelectGB = document.querySelector('.selectBtnGB')
 
+//Button UI in game
 const uiBtnStart = document.querySelector('.UiStartMenu')
 const uiBtnOption = document.querySelector('.UiOptionMenu')
 const uiBtnBack = document.querySelector('.UiBackMenu')
 
-
+//Button UI in options general
 const uiBtnRightOption = document.querySelector('.rightOption')
 const uiBtnLeftOption = document.querySelector('.leftOption')
 
+//Controllers images in little size
 const imgOptionGameBoy = document.querySelector('.gameboyOption')
 const imgOptionNokia = document.querySelector('.nokiaOption')
 
+//Controllers images 
 const imgBackgroundGameBoy = document.querySelector('.imgGameBoy')
 const imgBackgroundNokia = document.querySelector('.imgNokia')
 const textBackgroundOption = document.querySelector('.backgroundName')
 let optionBackgroundNumber = 0;
 
-let selectPressed = false;
-let count = 0
-
-
 //GameEngine : update, check position adn colission, and draw objects
 function GameEngine(){
+    //Inside the Menu
     if(!startingGame)
     {
         if (inMenu){
@@ -105,9 +101,9 @@ function GameEngine(){
         }
         if (inOptions){
             Options();
-        }
-        
+        }        
     }
+    //In game
     else{
          
         inMenu = false;
@@ -129,11 +125,13 @@ function GameEngine(){
         drawFood();
         drawScore();   
     }
+    //Rendering
     setTimeout(GameEngine, 1000/speedUpdate);
     canTouch=true;
 
 }
 
+//Menu's elements
 function Menu()
 {
     inMenu = true;
@@ -175,7 +173,7 @@ function Menu()
 
 
 }
-
+//Options's elements
 function Options(){
     uiBtnOption.style.visibility= 'hidden'
         uiBtnStart.style.visibility= 'hidden'
@@ -219,7 +217,7 @@ function Options(){
 
 }
 
-//GameboyMode 
+//GameboyMode elements
 function gameboyMode (){
     imgBackgroundNokia.style.visibility = "hidden"
 
@@ -232,6 +230,7 @@ function gameboyMode (){
     btnGameBoy.style.visibility = "visible"
 
 }
+//NokiaMode elements
 function nokiaMode(){
  
     imgBackgroundNokia.style.visibility = "visible"
@@ -240,29 +239,203 @@ function nokiaMode(){
     btnGameBoy.style.visibility = "hidden"
 
 }
+//GameOver system. Is active when the snake touch a wall or himself
+function isGameOver(){
+    let gameOver = false;
+
+    if (yspeed ==0 && xspeed ==0){
+        return false;
+    }
+    if (snakeHeadX<0){
+        gameOver=true;
+    }
+    else if (snakeHeadY==tileCount){
+        gameOver=true;
+    }
+    else if (snakeHeadX==tileCount){
+        gameOver=true;
+    }
+    else if (snakeHeadY<0){
+        gameOver=true;
+    }
+    //Detection if is toching himself
+    snakeTail.forEach(function(SnakeTailPart, i){
+        if(snakeTail[i].x==snakeHeadX && snakeTail[i].y ==snakeHeadY){
+            gameOver=true;
+        }
+    })
+    //Message "Game Over"
+    if (gameOver){
+        drawScore();
+        ctx.fillStyle = "white";
+        ctx.font="40px 'Press Start 2P'";
+        ctx.fillText("Game Over!",8, canvas.clientHeight/2);
+        uiBtnStart.style.visibility = "visible"
+        uiBtnStart.innerHTML = "Play Again"
+        uiBtnOption.style.visibility = "visible"
+        uiBtnOption.innerHTML = "Menu"
+    }
+    return gameOver;
+}
+//Mode Pause elements
+function pauseMode(){
+    //clearScreen();
+    saveSpeed[0]=xspeed
+    saveSpeed[1]=yspeed
+    xspeed = 0;
+    yspeed = 0;
+    inMove = false;
+    canTouch= false
+
+}
+
+//Movement controllers function
+function movement (direction){
+    //Up
+    inMove = true;
+    if(canTouch && !inPause){
+    if (direction == 0){
+        if(yspeed==1)
+        return;
+        xspeed = 0;
+        yspeed = -1;
+    }
+    //Down
+    else if(direction == 1)
+    {
+        if(yspeed==-1)
+        return;
+        xspeed = 0;
+        yspeed = 1;
+    }
+    //Left
+    else if(direction==2){
+        if(xspeed==1)
+        return;
+        xspeed = -1;
+        yspeed = 0;
+    }
+    //Right
+    else {
+        if(xspeed==-1)
+        return;
+        xspeed = 1;
+        yspeed = 0;
+    }
+    canTouch = false;
+}
+}
+
+
+//Collision system for the food 
+function checkCollision(){
+    snakeTail.forEach(function(SnakeTailPart, i){
+        if(snakeTail[i].x==foodX && snakeTail[i].y ==foodY){
+            foodX = Math.floor(Math.random()*tileCount);
+            foodY = Math.floor(Math.random()*tileCount);
+        }
+    })
+    if (foodX == snakeHeadX && foodY == snakeHeadY)
+    {
+        foodX = Math.floor(Math.random()*tileCount);
+        foodY = Math.floor(Math.random()*tileCount);
+        tailLength++;
+        score++;
+    }
+}
+
+//Update snake position
+function snakePosition(){
+    snakeHeadX+= accelerate*xspeed;
+    snakeHeadY+=accelerate*yspeed;
+}
+
+//Change buttons and colors
+function changeButtonMenu(){
+    if(optionsInMenu==0 ){
+        optionsInMenu = 1;
+        uiBtnOption.style.borderColor = "greenyellow"
+        uiBtnOption.style.color = "greenyellow"
+        uiBtnStart.style.color = "black"
+        uiBtnStart.style.borderColor = "black"
+
+    }
+    else{
+        optionsInMenu = 0;
+        uiBtnStart.style.borderColor = "greenyellow"
+        uiBtnStart.style.color = "greenyellow"
+        uiBtnOption.style.color = "black"
+
+        uiBtnOption.style.borderColor = "black"
+
+
+    }
+}
+
+//Action to button or key function to change the menu 
+function gameEnterBtn (){
+    if (inMenu){
+        clearScreen();
+       
+        if(optionsInMenu ==0){
+            startingGame = true;
+        }
+        else{
+            inOptions = true;
+        inMenu =false;
+        gameEnterBtn();
+        }
+        uiBtnOption.style.visibility= 'hidden'
+        uiBtnStart.style.visibility= 'hidden'
+    }
+    if(inGame){
+        //Pause Condition
+        if (!inPause){
+            setTimeout(pauseMode, 1)
+            inPause = true;
+        }
+        else{
+            inPause = false;
+            xspeed = saveSpeed[0]
+            yspeed = saveSpeed[1]
+            inMove = true;
+            //speedUpdate = 6;
+        }
+    }
+    if (inGameOver)
+    {
+        if(optionsInMenu==1){
+            clearScreen();
+        inMenu= true;
+        inGameOver = false;
+        GameEngine();
+        }
+        else{
+            clearScreen();
+            Menu();
+            clearScreen();
+            uiBtnOption.style.visibility= 'hidden'
+        uiBtnStart.style.visibility= 'hidden'
+
+        inGameOver = false;
+            startingGame = true;
+            GameEngine();
+        }
+    }
+    if(inOptions){
+        clearScreen();
+        uiBtnOption.style.visibility= 'hidden'
+        uiBtnStart.style.visibility= 'hidden'
+    }
+}
+
 
 //Clear the board game
 function clearScreen(){
     ctx.fillStyle = 'green';
     ctx.fillRect(0,0,canvas.clientWidth+20, canvas.clientHeight+20);
 }
-uiBtnLeftOption.addEventListener('click', function(){
-    optionBackgroundNumber--;
-    if(optionBackgroundNumber <0){
-        optionBackgroundNumber = 2;
-    }
-})
-uiBtnRightOption.addEventListener('click', function(){
-    optionBackgroundNumber++;
-    if(optionBackgroundNumber >2){
-        optionBackgroundNumber = 0;
-    }
-})
-/*btnSelect.addEventListener('click', function(){
-    gameEnterBtn();
-
-})*/
-
+//Display snake and his tail
 function drawSnake(){
     if (inPause){        
         ctx.fillStyle="orange";
@@ -309,7 +482,7 @@ function drawScore(){
     ctx.fillText("Score : " + score, canvas.clientWidth-canvas.clientWidth/2-100 ,30);
 }
 
-//Input controls function
+//Input controls key function
 document.body.addEventListener('keydown', keyDown);
 function keyDown(event)
 {
@@ -355,12 +528,14 @@ function keyDown(event)
              }
         }
     }
+    //Enter o Space key
    if (event.keyCode==32 ||event.keyCode==13 ){
     if(!inOptions){gameEnterBtn();}
     else{ inOptions = false;
         inMenu = true;
         clearScreen();}
    }
+   //ChangeDeMenu
    if(inMenu){
     if(event.keyCode==38 || event.keyCode==87 ){
         changeButtonMenu()
@@ -378,101 +553,21 @@ function keyDown(event)
     }
    }
 }
-function changeButtonMenu(){
-    if(optionsInMenu==0 ){
-        optionsInMenu = 1;
-        uiBtnOption.style.borderColor = "greenyellow"
-        uiBtnOption.style.color = "greenyellow"
-        uiBtnStart.style.color = "black"
-        uiBtnStart.style.borderColor = "black"
-
-    }
-    else{
-        optionsInMenu = 0;
-        uiBtnStart.style.borderColor = "greenyellow"
-        uiBtnStart.style.color = "greenyellow"
-        uiBtnOption.style.color = "black"
-
-        uiBtnOption.style.borderColor = "black"
-
-
-    }
-}
-function pauseMode(){
-    //clearScreen();
-    saveSpeed[0]=xspeed
-    saveSpeed[1]=yspeed
-    xspeed = 0;
-    yspeed = 0;
-    inMove = false;
-    canTouch= false
-
-}
-//Collision system for the food 
-function checkCollision(){
-    snakeTail.forEach(function(SnakeTailPart, i){
-        if(snakeTail[i].x==foodX && snakeTail[i].y ==foodY){
-            foodX = Math.floor(Math.random()*tileCount);
-            foodY = Math.floor(Math.random()*tileCount);
-        }
-    })
-    if (foodX == snakeHeadX && foodY == snakeHeadY)
-    {
-        foodX = Math.floor(Math.random()*tileCount);
-        foodY = Math.floor(Math.random()*tileCount);
-        tailLength++;
-        score++;
-    }
-}
-
-//Update snake position
-function snakePosition(){
-    snakeHeadX+= accelerate*xspeed;
-    snakeHeadY+=accelerate*yspeed;
-}
-
-//GameOver system. Is active when the snake touch a wall or himself
-function isGameOver(){
-    let gameOver = false;
-
-    if (yspeed ==0 && xspeed ==0){
-        return false;
-    }
-    if (snakeHeadX<0){
-        gameOver=true;
-    }
-    else if (snakeHeadY==tileCount){
-        gameOver=true;
-    }
-    else if (snakeHeadX==tileCount){
-        gameOver=true;
-    }
-    else if (snakeHeadY<0){
-        gameOver=true;
-    }
-    //Detection if is toching himself
-    snakeTail.forEach(function(SnakeTailPart, i){
-        if(snakeTail[i].x==snakeHeadX && snakeTail[i].y ==snakeHeadY){
-            gameOver=true;
-        }
-    })
-    //Message "Game Over"
-    if (gameOver){
-        drawScore();
-        ctx.fillStyle = "white";
-        ctx.font="40px 'Press Start 2P'";
-        ctx.fillText("Game Over!",8, canvas.clientHeight/2);
-        ctx.font="11px 'Press Start 2P'";
-        ctx.fillText("Press START or ENTER to play again!", 12, canvas.clientHeight/1.75);
-        uiBtnStart.style.visibility = "visible"
-        uiBtnStart.innerHTML = "Play Again"
-        uiBtnOption.style.visibility = "visible"
-        uiBtnOption.innerHTML = "Menu"
-    }
-    return gameOver;
-}
 
 //Button Actions
+uiBtnLeftOption.addEventListener('click', function(){
+    optionBackgroundNumber--;
+    if(optionBackgroundNumber <0){
+        optionBackgroundNumber = 2;
+    }
+})
+uiBtnRightOption.addEventListener('click', function(){
+    optionBackgroundNumber++;
+    if(optionBackgroundNumber >2){
+        optionBackgroundNumber = 0;
+    }
+})
+
 btnUp.addEventListener('click', function(){
     if (inGame){
         movement(0)}
@@ -506,12 +601,6 @@ btnStart.addEventListener('click', function(){
         }
 
 })
-/*btnSelect.addEventListener('click', function(){
-    gameEnterBtn();
-
-})*/
-
-
 
 btnUpGB.addEventListener('click', function(){
     if (inGame){
@@ -540,17 +629,11 @@ btnStartGB.addEventListener('click', function(){
     gameEnterBtn();
 
 })
-/*btnSelectGB.addEventListener('click', function(){
-    startPressed = true;
-    gameEnterBtn();
-
-})*/
 
 uiBtnStart.addEventListener('click', function(){       
     optionsInMenu = 0;
     gameEnterBtn();    
 })
-
 
 uiBtnOption.addEventListener('click', function(){
     optionsInMenu = 1;
@@ -589,104 +672,7 @@ btnAGB.addEventListener('click', function(){
         }
 })
 
-function gameEnterBtn (){
-    if (inMenu){
-        clearScreen();
-       
-        if(optionsInMenu ==0){
-            startingGame = true;
-        }
-        else{
-            inOptions = true;
-        inMenu =false;
-        gameEnterBtn();
-        }
-        uiBtnOption.style.visibility= 'hidden'
-        uiBtnStart.style.visibility= 'hidden'
-    }
-    if(inGame){
-        //Pause Condition
-        if (!inPause){
-            setTimeout(pauseMode, 1)
-            inPause = true;
-        }
-        else{
-            inPause = false;
-            xspeed = saveSpeed[0]
-            yspeed = saveSpeed[1]
-            inMove = true;
-            //speedUpdate = 6;
-        }
-
-    }
-    if (inGameOver)
-    {
-        if(optionsInMenu==1){
-            clearScreen();
-        inMenu= true;
-        inGameOver = false;
-        GameEngine();
-        }
-        else{
-            clearScreen();
-            Menu();
-            clearScreen();
-            uiBtnOption.style.visibility= 'hidden'
-        uiBtnStart.style.visibility= 'hidden'
-
-        inGameOver = false;
-            startingGame = true;
-            GameEngine();
 
 
-        }
-        
-
-
-    }
-    if(inOptions){
-        clearScreen();
-        uiBtnOption.style.visibility= 'hidden'
-        uiBtnStart.style.visibility= 'hidden'
-    }
-}
-
-
-function movement (direction){
-    //Up
-    inMove = true;
-    if(canTouch && !inPause){
-    if (direction == 0){
-        if(yspeed==1)
-        return;
-        xspeed = 0;
-        yspeed = -1;
-    }
-    //Down
-    else if(direction == 1)
-    {
-        if(yspeed==-1)
-        return;
-        xspeed = 0;
-        yspeed = 1;
-    }
-    //Left
-    else if(direction==2){
-        if(xspeed==1)
-        return;
-        xspeed = -1;
-        yspeed = 0;
-    }
-    //Right
-    else {
-        if(xspeed==-1)
-        return;
-        xspeed = 1;
-        yspeed = 0;
-    }
-    canTouch = false;
-}
-}
-
+//GAME//
 GameEngine();
-//Menu();
