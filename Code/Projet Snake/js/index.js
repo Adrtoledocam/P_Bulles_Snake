@@ -15,10 +15,15 @@ let speedUpdate = 6;
 let startingGame = false;
 
 //Actual Menu
-let inMenu = false;
+let inMenu = true;
 let inGame = false;
 let inGameOver = false;
 let inPause = false;
+let inOptions = false;
+
+//Menus Options Buttons
+let optionsInMenu = 0
+let optionsInOptions = 0
 
 //Snake head position
 let snakeHeadX = 10;
@@ -30,6 +35,7 @@ let yspeed = 0;
 let accelerate = 1; 
 let saveSpeed  = [];
 let inMove = false;
+let canTouch = false;
   
 //Snake tail 
 
@@ -50,14 +56,41 @@ let score = 0;
 
 
 //Button creation
+const btnNokia= document.querySelector('.NokiaButtons')
 const btnUp = document.querySelector('.upArrow')
 const btnDown = document.querySelector('.downArrow')
 const btnLeft = document.querySelector('.leftArrow')
 const btnRight = document.querySelector('.rightArrow') 
 const btnStart = document.querySelector('.startBtn')
-const btnSelect = document.querySelector('.selectBtn')
+const btnB = document.querySelector('.Bbtn')
+//const btnSelect = document.querySelector('.selectBtn')
 
-let startPressed = false;
+const btnGameBoy= document.querySelector('.GameBoyButtons')
+const btnUpGB = document.querySelector('.upArrowGB')
+const btnDownGB = document.querySelector('.downArrowGB')
+const btnLeftGB = document.querySelector('.leftArrowGB')
+const btnRightGB = document.querySelector('.rightArrowGB') 
+const btnStartGB = document.querySelector('.startBtnGB')
+const btnBGB = document.querySelector('.BbtnGB')
+const btnAGB = document.querySelector('.AbtnGB')
+//const btnSelectGB = document.querySelector('.selectBtnGB')
+
+const uiBtnStart = document.querySelector('.UiStartMenu')
+const uiBtnOption = document.querySelector('.UiOptionMenu')
+const uiBtnBack = document.querySelector('.UiBackMenu')
+
+
+const uiBtnRightOption = document.querySelector('.rightOption')
+const uiBtnLeftOption = document.querySelector('.leftOption')
+
+const imgOptionGameBoy = document.querySelector('.gameboyOption')
+const imgOptionNokia = document.querySelector('.nokiaOption')
+
+const imgBackgroundGameBoy = document.querySelector('.imgGameBoy')
+const imgBackgroundNokia = document.querySelector('.imgNokia')
+const textBackgroundOption = document.querySelector('.backgroundName')
+let optionBackgroundNumber = 0;
+
 let selectPressed = false;
 let count = 0
 
@@ -66,43 +99,22 @@ let count = 0
 function GameEngine(){
     if(!startingGame)
     {
-        Menu();
+        if (inMenu){
+            Menu();
+            canTouch= false
+        }
+        if (inOptions){
+            Options();
+        }
+        
     }
     else{
          
-        //clearScreen();
-        /*
         inMenu = false;
         inGame = true; 
 
         snakePosition();    
         checkCollision();
-
-        clearScreen();
-
-
-        let result = isGameOver();
-
-        if(result){
-            inGame = false
-            inGameOver = true;
-            startingGame = false;
-            return;
-        }       
-        clearScreen(); 
-        drawSnake();
-        drawFood();
-        drawScore();    
-        */
-
-        
-
-        inMenu = false;
-        inGame = true; 
-
-        snakePosition();    
-        checkCollision();
-
         //clearScreen();
         let result = isGameOver();
 
@@ -116,25 +128,10 @@ function GameEngine(){
         drawSnake();
         drawFood();
         drawScore();   
-        //gameLoop()
     }
     setTimeout(GameEngine, 1000/speedUpdate);
+    canTouch=true;
 
-}
-function gameLoop(){
-    if (count>4){
-        clearScreen(); 
-
-        drawSnake();
-        drawFood();
-        drawScore();   
-        requestAnimationFrame(gameLoop)
-
-        count = 0;
-    }
-    else{
-        count++
-    }
 }
 
 function Menu()
@@ -143,12 +140,25 @@ function Menu()
     inGame = false;
     inGameOver = false;
 
+    //Hidde assets
+    uiBtnLeftOption.style.visibility = 'hidden'
+    uiBtnRightOption.style.visibility = 'hidden'
+    imgOptionGameBoy.style.visibility = 'hidden'
+    imgOptionNokia.style.visibility = 'hidden'
+    textBackgroundOption.style.visibility = 'hidden'
+    uiBtnBack.style.visibility = "hidden"
+
+    //Show Buttons 
+    uiBtnOption.style.visibility= 'visible'
+        uiBtnStart.style.visibility= 'visible'
+        uiBtnOption.innerHTML = "Options"
+        uiBtnStart.innerHTML = "Start"
     //Message Welcome
     ctx.fillStyle = "white";
     ctx.font="25px 'Press Start 2P'";
     ctx.fillText("J-Snake", canvas.clientWidth/4+7, canvas.clientHeight/2);
-    ctx.font="13px 'Press Start 2P'";
-    ctx.fillText("Press START or Enter", canvas.clientWidth/5.5 , canvas.clientHeight/1.75)
+    //ctx.font="13px 'Press Start 2P'";
+    //ctx.fillText("Press START or Enter", canvas.clientWidth/5.5 , canvas.clientHeight/1.75)
     
     //Initialization variables
     snakeTail = [];
@@ -162,19 +172,96 @@ function Menu()
     xspeed = 0;
 
     score = 0;    
+
+
+}
+
+function Options(){
+    uiBtnOption.style.visibility= 'hidden'
+        uiBtnStart.style.visibility= 'hidden'
+        uiBtnBack.style.visibility = "visible"
+
+    uiBtnLeftOption.style.visibility = 'visible'
+    uiBtnRightOption.style.visibility = 'visible'
+    imgOptionGameBoy.style.visibility = 'visible'
+    textBackgroundOption.style.visibility = 'visible'
+    ctx.fillStyle = "white";
+    ctx.font="17px 'Press Start 2P'";
+    ctx.fillText("Select Your Background", 15, canvas.clientHeight/4);
+
+    if (optionBackgroundNumber == 0){
+        imgOptionGameBoy.style.visibility = 'hidden'
+        imgOptionNokia.style.visibility = 'hidden'
+        textBackgroundOption.innerHTML = "None"
+        textBackgroundOption.style.left="48.5%"
+        imgBackgroundGameBoy.style.visibility = 'hidden'
+        imgBackgroundNokia.style.visibility = 'hidden'
+
+        btnNokia.style.visibility = "hidden"
+    btnGameBoy.style.visibility = "hidden"
+        
+    }
+    else if(optionBackgroundNumber == 1){
+        imgOptionGameBoy.style.visibility = 'visible'
+        imgOptionNokia.style.visibility = 'hidden'
+        textBackgroundOption.innerHTML = "GameBoy"
+        textBackgroundOption.style.left="47.25%"
+        gameboyMode();
+    }
+    else if (optionBackgroundNumber == 2){
+        imgOptionGameBoy.style.visibility = 'hidden'
+        imgOptionNokia.style.visibility = 'visible'
+        textBackgroundOption.innerHTML = "Nokia"
+        textBackgroundOption.style.left="48%"
+        nokiaMode();
+    }
+    else{}
+
+}
+
+//GameboyMode 
+function gameboyMode (){
+    imgBackgroundNokia.style.visibility = "hidden"
+
+    imgBackgroundGameBoy.style.visibility = "visible";
+    imgBackgroundGameBoy.style.position = "absolute";
+    imgBackgroundGameBoy.style.width = "75%";
+    imgBackgroundGameBoy.style.top = "-0.75%";
+
+    btnNokia.style.visibility = "hidden"
+    btnGameBoy.style.visibility = "visible"
+
+}
+function nokiaMode(){
+ 
+    imgBackgroundNokia.style.visibility = "visible"
+    imgBackgroundGameBoy.style.visibility = "hidden"
+    btnNokia.style.visibility = "visible"
+    btnGameBoy.style.visibility = "hidden"
+
 }
 
 //Clear the board game
 function clearScreen(){
     ctx.fillStyle = 'green';
-    ctx.fillRect(0,0,canvas.clientWidth, canvas.clientHeight);
+    ctx.fillRect(0,0,canvas.clientWidth+20, canvas.clientHeight+20);
 }
-
-btnSelect.addEventListener('click', function(){
-    startPressed = true;
+uiBtnLeftOption.addEventListener('click', function(){
+    optionBackgroundNumber--;
+    if(optionBackgroundNumber <0){
+        optionBackgroundNumber = 2;
+    }
+})
+uiBtnRightOption.addEventListener('click', function(){
+    optionBackgroundNumber++;
+    if(optionBackgroundNumber >2){
+        optionBackgroundNumber = 0;
+    }
+})
+/*btnSelect.addEventListener('click', function(){
     gameEnterBtn();
 
-})
+})*/
 
 function drawSnake(){
     if (inPause){        
@@ -187,6 +274,9 @@ function drawSnake(){
         if (snakeTail.length>tailLength){
             snakeTail.pop();
         }
+        ctx.fillStyle = "white";
+        ctx.font="40px 'Press Start 2P'";
+        ctx.fillText("Pause",canvas.clientWidth/4, canvas.clientHeight/2 );
 
     }
     else{
@@ -223,29 +313,90 @@ function drawScore(){
 document.body.addEventListener('keydown', keyDown);
 function keyDown(event)
 {
-    if(!inPause){
+    if(!inPause && canTouch){
         //Up with arrow or W
-    if(event.keyCode==38 || event.keyCode==87){
-        movement(0)
-    }
+        if(event.keyCode==38 || event.keyCode==87 ){
+            movement(0)
+        }
     //Down with arrow or S
-    if(event.keyCode==40 || event.keyCode==83){
-        movement(1)
-   }
+        if(event.keyCode==40 || event.keyCode==83){
+            movement(1)
+        }
     //Left with arrow or A
-    if(event.keyCode==37 || event.keyCode==65){
-        movement(2)
-   }
-    //Right with arrow or D
-    if(event.keyCode==39|| event.keyCode==68){
-        movement(3)
-   }
+        if(event.keyCode==37 || event.keyCode==65){
+            if(!inOptions){movement(2)}
+            else{
+                optionBackgroundNumber--;
+                uiBtnLeftOption.style.borderColor = "greenyellow"
+                uiBtnLeftOption.style.color = "greenyellow"
+        uiBtnRightOption.style.color = "black"
+        uiBtnRightOption.style.borderColor = "black"
+    if(optionBackgroundNumber <0){
+        optionBackgroundNumber = 2;
     }
-    
+            }
+        }
+    //Right with arrow or D
+        if(event.keyCode==39|| event.keyCode==68){
+            if(!inOptions){movement(3)}
+            else
+            {
+                optionBackgroundNumber++;
+                uiBtnRightOption.style.borderColor = "greenyellow"
+                uiBtnRightOption.style.color = "greenyellow"
+                uiBtnLeftOption.style.color = "black"
+                uiBtnLeftOption.style.borderColor = "black"
 
+                if(optionBackgroundNumber >2){
+                optionBackgroundNumber = 0;
+                }
+
+
+             }
+        }
+    }
    if (event.keyCode==32 ||event.keyCode==13 ){
-    gameEnterBtn();
+    if(!inOptions){gameEnterBtn();}
+    else{ inOptions = false;
+        inMenu = true;
+        clearScreen();}
    }
+   if(inMenu){
+    if(event.keyCode==38 || event.keyCode==87 ){
+        changeButtonMenu()
+    }
+    if(event.keyCode==40 || event.keyCode==83){
+        changeButtonMenu()
+    }    
+   }
+   else if(inGameOver){
+    if(event.keyCode==38 || event.keyCode==87 ){
+        changeButtonMenu()
+    }
+    if(event.keyCode==40 || event.keyCode==83){
+        changeButtonMenu()
+    }
+   }
+}
+function changeButtonMenu(){
+    if(optionsInMenu==0 ){
+        optionsInMenu = 1;
+        uiBtnOption.style.borderColor = "greenyellow"
+        uiBtnOption.style.color = "greenyellow"
+        uiBtnStart.style.color = "black"
+        uiBtnStart.style.borderColor = "black"
+
+    }
+    else{
+        optionsInMenu = 0;
+        uiBtnStart.style.borderColor = "greenyellow"
+        uiBtnStart.style.color = "greenyellow"
+        uiBtnOption.style.color = "black"
+
+        uiBtnOption.style.borderColor = "black"
+
+
+    }
 }
 function pauseMode(){
     //clearScreen();
@@ -254,6 +405,8 @@ function pauseMode(){
     xspeed = 0;
     yspeed = 0;
     inMove = false;
+    canTouch= false
+
 }
 //Collision system for the food 
 function checkCollision(){
@@ -311,13 +464,21 @@ function isGameOver(){
         ctx.fillText("Game Over!",8, canvas.clientHeight/2);
         ctx.font="11px 'Press Start 2P'";
         ctx.fillText("Press START or ENTER to play again!", 12, canvas.clientHeight/1.75);
+        uiBtnStart.style.visibility = "visible"
+        uiBtnStart.innerHTML = "Play Again"
+        uiBtnOption.style.visibility = "visible"
+        uiBtnOption.innerHTML = "Menu"
     }
     return gameOver;
 }
 
 //Button Actions
 btnUp.addEventListener('click', function(){
-    movement(0)
+    if (inGame){
+        movement(0)}
+    else if (inMenu ||inGameOver){
+        changeButtonMenu()
+    }
 })
 btnDown.addEventListener('click', function(){
     movement(1)
@@ -331,20 +492,117 @@ btnRight.addEventListener('click', function(){
 
 })
 btnStart.addEventListener('click', function(){
-    startPressed = true;
+
+    if(inMenu){gameEnterBtn()}
+    else if(inOptions){inOptions = false;
+        inMenu = true;
+        clearScreen();}
+        else if (inGameOver){
+            gameEnterBtn()
+        }
+        else{
+            gameEnterBtn();
+
+        }
+
+})
+/*btnSelect.addEventListener('click', function(){
+    gameEnterBtn();
+
+})*/
+
+
+
+btnUpGB.addEventListener('click', function(){
+    if (inGame){
+        movement(0)}
+    else if (inMenu ||inGameOver){
+        changeButtonMenu()
+    }
+    
+})
+btnDownGB.addEventListener('click', function(){
+    if (inGame){
+        movement(1)}
+    else if (inMenu ||inGameOver){
+        changeButtonMenu()
+    }
+})
+btnLeftGB.addEventListener('click', function(){
+    movement(2)
+
+})
+btnRightGB.addEventListener('click', function(){
+    movement(3)
+
+})
+btnStartGB.addEventListener('click', function(){
     gameEnterBtn();
 
 })
-btnSelect.addEventListener('click', function(){
+/*btnSelectGB.addEventListener('click', function(){
     startPressed = true;
     gameEnterBtn();
 
+})*/
+
+uiBtnStart.addEventListener('click', function(){       
+    optionsInMenu = 0;
+    gameEnterBtn();    
+})
+
+
+uiBtnOption.addEventListener('click', function(){
+    optionsInMenu = 1;
+    gameEnterBtn();
+
+})
+uiBtnBack.addEventListener('click', function(){
+    inOptions = false;
+    inMenu = true;
+    clearScreen();
+})
+
+btnBGB.addEventListener('click', function(){
+    if(inOptions){
+        inOptions = false;
+    inMenu = true;
+    clearScreen();
+    }
+    
+})
+btnB.addEventListener('click', function(){
+    if(inOptions){
+        inOptions = false;
+    inMenu = true;
+    clearScreen();
+    }
+    
+})
+btnAGB.addEventListener('click', function(){
+    if(inMenu){gameEnterBtn()}
+    else if(inOptions){inOptions = false;
+        inMenu = true;
+        clearScreen();}
+        else if (inGameOver){
+            gameEnterBtn()
+        }
 })
 
 function gameEnterBtn (){
     if (inMenu){
         clearScreen();
-        startingGame = true;
+       
+        if(optionsInMenu ==0){
+            startingGame = true;
+        }
+        else{
+            inOptions = true;
+        inMenu =false;
+        gameEnterBtn();
+        }
+        uiBtnOption.style.visibility= 'hidden'
+        uiBtnStart.style.visibility= 'hidden'
     }
     if(inGame){
         //Pause Condition
@@ -363,9 +621,33 @@ function gameEnterBtn (){
     }
     if (inGameOver)
     {
-        clearScreen();
+        if(optionsInMenu==1){
+            clearScreen();
+        inMenu= true;
+        inGameOver = false;
         GameEngine();
+        }
+        else{
+            clearScreen();
+            Menu();
+            clearScreen();
+            uiBtnOption.style.visibility= 'hidden'
+        uiBtnStart.style.visibility= 'hidden'
 
+        inGameOver = false;
+            startingGame = true;
+            GameEngine();
+
+
+        }
+        
+
+
+    }
+    if(inOptions){
+        clearScreen();
+        uiBtnOption.style.visibility= 'hidden'
+        uiBtnStart.style.visibility= 'hidden'
     }
 }
 
@@ -373,6 +655,7 @@ function gameEnterBtn (){
 function movement (direction){
     //Up
     inMove = true;
+    if(canTouch && !inPause){
     if (direction == 0){
         if(yspeed==1)
         return;
@@ -387,19 +670,22 @@ function movement (direction){
         xspeed = 0;
         yspeed = 1;
     }
+    //Left
     else if(direction==2){
         if(xspeed==1)
         return;
         xspeed = -1;
         yspeed = 0;
     }
+    //Right
     else {
         if(xspeed==-1)
         return;
         xspeed = 1;
         yspeed = 0;
     }
-
+    canTouch = false;
+}
 }
 
 GameEngine();

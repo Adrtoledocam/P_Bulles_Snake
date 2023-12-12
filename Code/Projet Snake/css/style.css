@@ -9,21 +9,53 @@ body{
     background-color: black;
 }
 canvas{
+    /* CANVAS GAMEBOY COLORS
     position: absolute;
     box-shadow: green  0px 0px 100px;
     background-color: green;
     margin-top: -4.5%;
     width: 21%;
- 
+    */
+    
+    /*Nokia Canvas
+    position: absolute;
+    box-shadow: green  0px 0px 100px;
+    background-color: green;
+    left: 26.2%;
+    width: 21%;
+    */
+    
+    box-shadow: green  0px 0px 100px;
+    background-color: green;
+    position: absolute;
+    top:20%;
+    width: 20% ;
+
 }
 img.imgGameBoy{
+    position: absolute;
+
     width: 75%;
+    visibility: hidden;
+}
+img.imgNokia{
+    position: absolute;
+
+    /*width: 100%;*/
+    visibility: hidden;
+    top:-1%;
+    left:15.25%;
+    width: 94%;
 }
 
 button{
     position: absolute;
 }
+div.NokiaButtons{
+    visibility: hidden;
+}
 button.upArrow{
+    /* GameboyBtn
     background-color: transparent;
     border-color: transparent;
 
@@ -31,9 +63,22 @@ button.upArrow{
     left: 20.75%;
     width: 3.5%;
     height: 7%;
+    */
+
+    background-color: transparent;
+    border-color: transparent;
+    border-radius: 25%;
+
+
+    top : 9%;
+    left: 82.5%;
+    width: 6%;
+    height: 17.5%;
+
 
 }
 button.leftArrow{
+    /* GameboyBtn
     background-color: transparent;
     border-color: transparent;
 
@@ -41,11 +86,23 @@ button.leftArrow{
     left: 17.5%;
     width: 3.5%;
     height: 7%;
+    */
 
-    /*height: 60px;*/
+    background-color: transparent;
+    border-color: transparent;
+    border-radius: 25%;
+
+
+    top : 33%;
+    left: 77.5%;
+    width: 6%;
+    height: 17.5%;
+
 
 }
 button.rightArrow{
+    /*GameboyBtn
+
     background-color: transparent;
     border-color: transparent;
 
@@ -53,16 +110,45 @@ button.rightArrow{
     left: 24%;
     width: 3.5%;
     height: 7%;
+
+    */
+    background-color: transparent;
+    border-color: transparent;
+    border-radius: 25%;
+
+
+    top : 33%;
+    left: 91%;
+    width: 6%;
+    height: 17.5%;
+
+
 }
 button.downArrow{
+    /* GameboyBtn
     background-color: transparent;
     top : 40%;
     left: 20.75%;
     width: 3.5%;
     height: 7%;
     border-color: transparent;
+
+    */
+
+    background-color: transparent;
+    border-color: transparent;
+    border-radius: 25%;
+
+
+    top : 55.5%;
+    left: 82.5%;
+    width: 6%;
+    height: 17.5%;
+
 }
 button.startBtn{
+        /* GameboyBtn
+
     background-color: transparent;
     top : 55.5%;
     left: 26.3%;
@@ -71,9 +157,19 @@ button.startBtn{
     border-radius: 50%;
     border-color: transparent;
 
+    */
+    background-color: transparent;
+    top : 24%;
+    left: 63.75%;
+    width: 5%;
+    height: 35%;
+    border-radius: 25%;
+    border-color: transparent;
+
 }
 
 button.selectBtn{
+    /*GameboyBtn
     background-color: transparent;
     top : 64.5%;
     left: 26.15%;
@@ -81,5 +177,170 @@ button.selectBtn{
     height: 5.3%;
     border-radius: 50%;
     border-color: transparent;
+    */
+    visibility: hidden;
+}
+button.UiStartMenu{
+    position: absolute;
+    top: 47%;
+    left: 45.25%;
+    height: 5%;
+    width: 10%;
+
+    
+    border-color: greenyellow;
+    background-color: transparent;
+    font-family: 'Press Start 2P';
+    color: greenyellow;
+
+    visibility: visible;
 
 }
+button.UiOptionMenu{
+    position: absolute;
+    top: 53%;
+    left: 45.25%;
+    height: 5%;
+    width: 10%;
+    font-family: 'Press Start 2P';
+    border-color: black;
+    background-color: green;
+    color: black;
+    visibility: visible;
+
+}
+button.UiBackMenu{
+    position: absolute;
+    top: 21%;
+    left: 40.5%;
+    height: 5%;
+    width: 4%;
+    font-family: 'Press Start 2P';
+    border-color: black;
+    background-color: green;
+    color: greenyellow;
+    visibility: hidden;
+}
+img.nokiaOption{
+    position: absolute;
+    
+    width: 15%;
+    top: 35%;
+    left: 42.5%;
+    visibility: hidden;
+}
+img.gameboyOption{
+    position: absolute;
+    
+    width: 15%;
+    top: 33%;
+    left: 42.5%;
+    visibility: hidden;
+}
+button.leftOption{
+    width: 4%;
+    height: 4%;
+    font-family: 'Press Start 2P';
+    font-size: 25px;
+    left: 43%;
+    top: 55%;
+    background-color: green;
+    color: greenyellow;
+    visibility: hidden;
+}
+button.rightOption{
+    width: 4%;
+    height: 4%;
+    font-family: 'Press Start 2P';
+    font-size: 25px;
+    left: 53%;
+    top: 55%;
+    background-color: green;
+    color: greenyellow;
+    visibility: hidden;
+}
+button.Bbtn{
+    background-color: transparent;
+    top : 54%;
+    left: 66.5%;
+    width: 7%;
+    height: 18%;
+    border-radius: 40%;
+    border-color: transparent;
+}
+div.backgroundName{
+    position: absolute;
+
+    font-family: 'Press Start 2P';
+    font-size: 15px;
+    top: 56.5%;
+    left: 48.5%;
+    visibility: hidden;
+
+}
+div.GameBoyButtons{
+    visibility: hidden;
+}
+
+button.upArrowGB{
+    background-color: transparent;
+    border-color: transparent;
+    top : 26.5%;
+    left: 20.75%;
+    width: 3.5%;
+    height: 7%;
+}
+button.leftArrowGB{
+    background-color: transparent;
+    border-color: transparent;
+    top : 33%;
+    left: 17.5%;
+    width: 3.5%;
+    height: 7%;
+}
+button.rightArrowGB{
+    background-color: transparent;
+    border-color: transparent;
+    top : 33%;
+    left: 24%;
+    width: 3.5%;
+    height: 7%;
+}
+button.downArrowGB{
+    background-color: transparent;
+    top : 40%;
+    left: 20.75%;
+    width: 3.5%;
+    height: 7%;
+    border-color: transparent;
+}
+button.startBtnGB{
+    background-color: transparent;
+    top : 55.5%;
+    left: 26.3%;
+    width: 2.5%;
+    height: 5.3%;
+    border-radius: 50%;
+    border-color: transparent;
+}
+button.BbtnGB{
+    background-color: transparent;
+    top : 33.75%;
+    left: 72.25%;
+    width: 5%;
+    height: 10%;
+    border-radius: 50%;
+    border-color: transparent;
+
+}
+button.AbtnGB{
+    background-color: transparent;
+    top : 28.75%;
+    left: 79%;
+    width: 5%;
+    height: 10%;
+    border-radius: 50%;
+    border-color: transparent;
+
+}
+

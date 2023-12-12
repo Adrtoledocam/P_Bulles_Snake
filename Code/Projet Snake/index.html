@@ -13,15 +13,43 @@
 </head>
 
 <body>
-    <img class = imgGameBoy src = "img/GameBoyAdvance.png">
+    <img class = imgGameBoy src = "img/GameBoyAdvance.png"> 
+    <img class = imgNokia src = "img/Nokia.png"> 
     <canvas id="game" width="400" height="400"></canvas>
-
+    <div class="GameBoyButtons">
+        <button class="upArrowGB"></button>
+            <button class="leftArrowGB"></button>
+            <button class="rightArrowGB"></button>
+            <button class="downArrowGB"></button>
+            <button class="startBtnGB"></button>     
+            <button class="BbtnGB"></button>
+            <button class="AbtnGB"></button>
+            <!--<button class="selectBtnGB"></button>-->
+    </div>
+    <div class="NokiaButtons">
             <button class="upArrow"></button>
             <button class="leftArrow"></button>
             <button class="rightArrow"></button>
             <button class="downArrow"></button>
             <button class="startBtn"></button>     
-            <button class="selectBtn"></button>
+            <button class="Bbtn"></button>
+            <button class="Abtn"></button>
+            <!--<button class="selectBtn"></button>-->
+    </div>
+    <button class="UiStartMenu">Start</button>
+    <button class="UiOptionMenu">Options</button>
+    <button class="UiBackMenu">Back</button>
+
+            <div class="optionsMenu">
+                <div class="imgMenuDiv">
+                    <img class="nokiaOption" src="/img/Nokia.png">
+                    <img class="gameboyOption" src="/img/GameboyAdvance.png">
+                </div>
+                <div class="backgroundName">None</div>
+                <button class="leftOption">←</button>
+                <button class="rightOption">→</button>
+            </div>
+            
     <script type="text/javascript" src="js/index.js"></script>  
 </body>
 <footer>
