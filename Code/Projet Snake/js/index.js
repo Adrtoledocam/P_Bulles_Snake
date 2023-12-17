@@ -6,8 +6,8 @@
 //Initialisation du canevas et de la carte 2D
 const canvas = document.getElementById('game'); 
 const ctx = canvas.getContext('2d');
-let tileCount=20;
-let titleSize=canvas.clientWidth/tileCount-2;
+const tileCount=20;
+const titleSize=canvas.clientWidth/tileCount-2;
 
 //Speed Update Game
 let speedUpdate = 6;
@@ -40,20 +40,29 @@ let canTouch = false;
 let snakeTail = [];
 let tailLength ;
 class SnakeTailPart {
-    constructor(x,y){
+    constructor(x,y,){
         this.x=x;
         this.y=y;
     }
 }
-//Food position
-let foodX = Math.floor(Math.random()*tileCount);
-let foodY = Math.floor(Math.random()*tileCount);
+//Food Item
+class FoodItem {
+    constructor (x, y){
+        this.x = x;
+        this.y = y;
+    }
+    rndFoodPosition(){
+        this.x = rndFunction(tileCount);
+        this.y= rndFunction(tileCount);
+    }
+}
+let redFood = new FoodItem();
 
 //Score
 let score = 0;
 
 //Button creation for Nokia
-const btnNokia= document.querySelector('.NokiaButtons')
+//const btnNokia= document.querySelector('.NokiaButtons')
 const btnUp = document.querySelector('.upArrow')
 const btnDown = document.querySelector('.downArrow')
 const btnLeft = document.querySelector('.leftArrow')
@@ -62,7 +71,7 @@ const btnStart = document.querySelector('.startBtn')
 const btnB = document.querySelector('.Bbtn')
 
 //Button creation for GameBoy
-const btnGameBoy= document.querySelector('.GameBoyButtons')
+//const btnGameBoy= document.querySelector('.GameBoyButtons')
 const btnUpGB = document.querySelector('.upArrowGB')
 const btnDownGB = document.querySelector('.downArrowGB')
 const btnLeftGB = document.querySelector('.leftArrowGB')
@@ -80,18 +89,23 @@ const uiBtnBack = document.querySelector('.UiBackMenu')
 const uiBtnRightOption = document.querySelector('.rightOption')
 const uiBtnLeftOption = document.querySelector('.leftOption')
 
-//Controllers images in little size
-const imgOptionGameBoy = document.querySelector('.gameboyOption')
-const imgOptionNokia = document.querySelector('.nokiaOption')
-
-//Controllers images 
-const imgBackgroundGameBoy = document.querySelector('.imgGameBoy')
-const imgBackgroundNokia = document.querySelector('.imgNokia')
-const textBackgroundOption = document.querySelector('.backgroundName')
+//BackgroundOption
 let optionBackgroundNumber = 0;
 
+//Import imageInfo
+import { gameboyMode } from "./emulator.js"
+import { nokiaMode } from "./emulator.js"
+import { gameboyModeInOptions} from "./emulator.js"
+import { nokiaModeInOptions} from "./emulator.js"
+import { noneModeInOptions} from "./emulator.js"
+//import { allDisplayAssets } from "./emulator.js"
+import { allHiddenAssets } from "./emulator.js"
+ 
+// Basic Random funciton with arrow
+const rndFunction = a => Math.floor(Math.random()*a)
+
 //GameEngine : update, check position adn colission, and draw objects
-function GameEngine(){
+let GameEngine = ()=>{
     //Inside the Menu
     if(!startingGame)
     {
@@ -110,7 +124,7 @@ function GameEngine(){
         inGame = true; 
 
         snakePosition();    
-        checkCollision();
+        checkCollision(redFood.x, redFood.y);
         //clearScreen();
         let result = isGameOver();
 
@@ -128,119 +142,69 @@ function GameEngine(){
     //Rendering
     setTimeout(GameEngine, 1000/speedUpdate);
     canTouch=true;
-
 }
 
 //Menu's elements
-function Menu()
+let Menu =()=>
 {
     inMenu = true;
     inGame = false;
     inGameOver = false;
 
     //Hidde assets
-    uiBtnLeftOption.style.visibility = 'hidden'
-    uiBtnRightOption.style.visibility = 'hidden'
-    imgOptionGameBoy.style.visibility = 'hidden'
-    imgOptionNokia.style.visibility = 'hidden'
-    textBackgroundOption.style.visibility = 'hidden'
-    uiBtnBack.style.visibility = "hidden"
+    HiddenAssets()
 
-    //Show Buttons 
-    uiBtnOption.style.visibility= 'visible'
-        uiBtnStart.style.visibility= 'visible'
-        uiBtnOption.innerHTML = "Options"
-        uiBtnStart.innerHTML = "Start"
+    //Display Buttons 
+    BtnUiDisplay();
+
     //Message Welcome
     ctx.fillStyle = "white";
     ctx.font="25px 'Press Start 2P'";
     ctx.fillText("J-Snake", canvas.clientWidth/4+7, canvas.clientHeight/2);
-    //ctx.font="13px 'Press Start 2P'";
-    //ctx.fillText("Press START or Enter", canvas.clientWidth/5.5 , canvas.clientHeight/1.75)
     
-    //Initialization variables
+    //Initialization du snake values
     snakeTail = [];
     tailLength = 2;
-
     snakeHeadX = 10;
     snakeHeadY = 10;
-    foodX = Math.floor(Math.random()*tileCount);
-    foodY = Math.floor(Math.random()*tileCount);
+    redFood.rndFoodPosition();
     yspeed = 0;
     xspeed = 0;
 
+    //Score Value
     score = 0;    
 
 
 }
 //Options's elements
-function Options(){
+let Options = () =>{
     uiBtnOption.style.visibility= 'hidden'
-        uiBtnStart.style.visibility= 'hidden'
-        uiBtnBack.style.visibility = "visible"
+    uiBtnStart.style.visibility= 'hidden'
+    uiBtnBack.style.visibility = "visible"
 
     uiBtnLeftOption.style.visibility = 'visible'
     uiBtnRightOption.style.visibility = 'visible'
-    imgOptionGameBoy.style.visibility = 'visible'
-    textBackgroundOption.style.visibility = 'visible'
+
     ctx.fillStyle = "white";
     ctx.font="17px 'Press Start 2P'";
     ctx.fillText("Select Your Background", 15, canvas.clientHeight/4);
 
     if (optionBackgroundNumber == 0){
-        imgOptionGameBoy.style.visibility = 'hidden'
-        imgOptionNokia.style.visibility = 'hidden'
-        textBackgroundOption.innerHTML = "None"
-        textBackgroundOption.style.left="48.5%"
-        imgBackgroundGameBoy.style.visibility = 'hidden'
-        imgBackgroundNokia.style.visibility = 'hidden'
 
-        btnNokia.style.visibility = "hidden"
-    btnGameBoy.style.visibility = "hidden"
-        
+        noneModeInOptions(); 
     }
     else if(optionBackgroundNumber == 1){
-        imgOptionGameBoy.style.visibility = 'visible'
-        imgOptionNokia.style.visibility = 'hidden'
-        textBackgroundOption.innerHTML = "GameBoy"
-        textBackgroundOption.style.left="47.25%"
-        gameboyMode();
+        gameboyModeInOptions()
     }
     else if (optionBackgroundNumber == 2){
-        imgOptionGameBoy.style.visibility = 'hidden'
-        imgOptionNokia.style.visibility = 'visible'
-        textBackgroundOption.innerHTML = "Nokia"
-        textBackgroundOption.style.left="48%"
-        nokiaMode();
+        nokiaModeInOptions() 
     }
     else{}
 
 }
 
-//GameboyMode elements
-function gameboyMode (){
-    imgBackgroundNokia.style.visibility = "hidden"
-
-    imgBackgroundGameBoy.style.visibility = "visible";
-    imgBackgroundGameBoy.style.position = "absolute";
-    imgBackgroundGameBoy.style.width = "75%";
-    imgBackgroundGameBoy.style.top = "-0.75%";
-
-    btnNokia.style.visibility = "hidden"
-    btnGameBoy.style.visibility = "visible"
-
-}
-//NokiaMode elements
-function nokiaMode(){
- 
-    imgBackgroundNokia.style.visibility = "visible"
-    imgBackgroundGameBoy.style.visibility = "hidden"
-    btnNokia.style.visibility = "visible"
-    btnGameBoy.style.visibility = "hidden"
-
-}
 //GameOver system. Is active when the snake touch a wall or himself
-function isGameOver(){
+let isGameOver = ()=>{
     let gameOver = false;
 
     if (yspeed ==0 && xspeed ==0){
@@ -259,7 +223,7 @@ function isGameOver(){
         gameOver=true;
     }
     //Detection if is toching himself
-    snakeTail.forEach(function(SnakeTailPart, i){
+    snakeTail.forEach((SnakeTailPart, i)=>{
         if(snakeTail[i].x==snakeHeadX && snakeTail[i].y ==snakeHeadY){
             gameOver=true;
         }
@@ -277,9 +241,9 @@ function isGameOver(){
     }
     return gameOver;
 }
+
 //Mode Pause elements
-function pauseMode(){
-    //clearScreen();
+let pauseMode = () =>{
     saveSpeed[0]=xspeed
     saveSpeed[1]=yspeed
     xspeed = 0;
@@ -290,7 +254,7 @@ function pauseMode(){
 }
 
 //Movement controllers function
-function movement (direction){
+let movement = (direction)=>{
     //Up
     inMove = true;
     if(canTouch && !inPause){
@@ -328,30 +292,33 @@ function movement (direction){
 
 
 //Collision system for the food 
-function checkCollision(){
-    snakeTail.forEach(function(SnakeTailPart, i){
-        if(snakeTail[i].x==foodX && snakeTail[i].y ==foodY){
-            foodX = Math.floor(Math.random()*tileCount);
-            foodY = Math.floor(Math.random()*tileCount);
+let checkCollision = (...positionInfo) =>{
+    snakeTail.forEach((SnakeTailPart, i )=>{
+        if(snakeTail[i].x==redFood.x && snakeTail[i].y ==redFood.y){
+            
+           
+            redFood.rndFoodPosition();
         }
     })
-    if (foodX == snakeHeadX && foodY == snakeHeadY)
+    if (redFood.x == snakeHeadX && redFood.y == snakeHeadY)
     {
-        foodX = Math.floor(Math.random()*tileCount);
-        foodY = Math.floor(Math.random()*tileCount);
+        redFood.rndFoodPosition();
         tailLength++;
         score++;
+        positionInfo.forEach((info, e)=>{
+            console.log(info)
+        })
     }
 }
 
 //Update snake position
-function snakePosition(){
+let snakePosition = ()=>{
     snakeHeadX+= accelerate*xspeed;
     snakeHeadY+=accelerate*yspeed;
 }
 
-//Change buttons and colors
-function changeButtonMenu(){
+//Change button's colors
+let changeButtonMenu = () =>{
     if(optionsInMenu==0 ){
         optionsInMenu = 1;
         uiBtnOption.style.borderColor = "greenyellow"
@@ -365,15 +332,12 @@ function changeButtonMenu(){
         uiBtnStart.style.borderColor = "greenyellow"
         uiBtnStart.style.color = "greenyellow"
         uiBtnOption.style.color = "black"
-
         uiBtnOption.style.borderColor = "black"
-
-
     }
 }
 
 //Action to button or key function to change the menu 
-function gameEnterBtn (){
+let gameEnterBtn = ()=>{
     if (inMenu){
         clearScreen();
        
@@ -415,7 +379,7 @@ function gameEnterBtn (){
             Menu();
             clearScreen();
             uiBtnOption.style.visibility= 'hidden'
-        uiBtnStart.style.visibility= 'hidden'
+            uiBtnStart.style.visibility= 'hidden'
 
         inGameOver = false;
             startingGame = true;
@@ -431,16 +395,16 @@ function gameEnterBtn (){
 
 
 //Clear the board game
-function clearScreen(){
+let clearScreen = ()=>{
     ctx.fillStyle = 'green';
-    ctx.fillRect(0,0,canvas.clientWidth+20, canvas.clientHeight+20);
+    ctx.fillRect(0,0,canvas.clientWidth*2, canvas.clientHeight*2);
 }
 //Display snake and his tail
-function drawSnake(){
+let drawSnake = ()=>{
     if (inPause){        
         ctx.fillStyle="orange";
         
-        snakeTail.forEach(function(SnakeTailPart, i){
+        snakeTail.forEach((SnakeTailPart, i)=>{
             ctx.fillRect(SnakeTailPart = snakeTail[i].x *tileCount, SnakeTailPart = snakeTail[i].y*tileCount, titleSize, titleSize)
 
         })
@@ -461,7 +425,7 @@ function drawSnake(){
                 snakeTail.pop();
             }
         }         
-        snakeTail.forEach(function(SnakeTailPart, i){
+        snakeTail.forEach((SnakeTailPart, i)=>{
             ctx.fillRect(SnakeTailPart = snakeTail[i].x *tileCount, SnakeTailPart = snakeTail[i].y*tileCount, titleSize, titleSize)
         })
     }        
@@ -470,13 +434,12 @@ function drawSnake(){
     ctx.fillRect(snakeHeadX*tileCount, snakeHeadY*tileCount, titleSize, titleSize);
 }
 //Display food 
-function drawFood(){
+let drawFood=()=>{
     ctx.fillStyle="red";
-    ctx.fillRect(foodX*tileCount, foodY*tileCount, titleSize, titleSize);
+    ctx.fillRect(redFood.x*tileCount, redFood.y*tileCount, titleSize, titleSize);
 }
-
 //Display Score
-function drawScore(){
+let drawScore=()=>{
     ctx.fillStyle="white";
     ctx.font ="20px 'Press Start 2P'";
     ctx.fillText("Score : " + score, canvas.clientWidth-canvas.clientWidth/2-100 ,30);
@@ -502,8 +465,8 @@ function keyDown(event)
                 optionBackgroundNumber--;
                 uiBtnLeftOption.style.borderColor = "greenyellow"
                 uiBtnLeftOption.style.color = "greenyellow"
-        uiBtnRightOption.style.color = "black"
-        uiBtnRightOption.style.borderColor = "black"
+                uiBtnRightOption.style.color = "black"
+                uiBtnRightOption.style.borderColor = "black"
     if(optionBackgroundNumber <0){
         optionBackgroundNumber = 2;
     }
@@ -555,38 +518,38 @@ function keyDown(event)
 }
 
 //Button Actions
-uiBtnLeftOption.addEventListener('click', function(){
+uiBtnLeftOption.addEventListener('click', ()=>{
     optionBackgroundNumber--;
     if(optionBackgroundNumber <0){
         optionBackgroundNumber = 2;
     }
 })
-uiBtnRightOption.addEventListener('click', function(){
+uiBtnRightOption.addEventListener('click', ()=>{
     optionBackgroundNumber++;
     if(optionBackgroundNumber >2){
         optionBackgroundNumber = 0;
     }
 })
 
-btnUp.addEventListener('click', function(){
+btnUp.addEventListener('click', ()=>{
     if (inGame){
         movement(0)}
     else if (inMenu ||inGameOver){
         changeButtonMenu()
     }
 })
-btnDown.addEventListener('click', function(){
+btnDown.addEventListener('click', ()=>{
     movement(1)
 })
-btnLeft.addEventListener('click', function(){
+btnLeft.addEventListener('click', ()=>{
     movement(2)
 
 })
-btnRight.addEventListener('click', function(){
+btnRight.addEventListener('click', ()=>{
     movement(3)
 
 })
-btnStart.addEventListener('click', function(){
+btnStart.addEventListener('click', ()=>{
 
     if(inMenu){gameEnterBtn()}
     else if(inOptions){inOptions = false;
@@ -602,7 +565,7 @@ btnStart.addEventListener('click', function(){
 
 })
 
-btnUpGB.addEventListener('click', function(){
+btnUpGB.addEventListener('click', ()=>{
     if (inGame){
         movement(0)}
     else if (inMenu ||inGameOver){
@@ -610,43 +573,43 @@ btnUpGB.addEventListener('click', function(){
     }
     
 })
-btnDownGB.addEventListener('click', function(){
+btnDownGB.addEventListener('click', ()=>{
     if (inGame){
         movement(1)}
     else if (inMenu ||inGameOver){
         changeButtonMenu()
     }
 })
-btnLeftGB.addEventListener('click', function(){
+btnLeftGB.addEventListener('click', ()=>{
     movement(2)
 
 })
-btnRightGB.addEventListener('click', function(){
+btnRightGB.addEventListener('click', ()=>{
     movement(3)
 
 })
-btnStartGB.addEventListener('click', function(){
+btnStartGB.addEventListener('click', ()=>{
     gameEnterBtn();
 
 })
 
-uiBtnStart.addEventListener('click', function(){       
+uiBtnStart.addEventListener('click', ()=>{       
     optionsInMenu = 0;
     gameEnterBtn();    
 })
 
-uiBtnOption.addEventListener('click', function(){
+uiBtnOption.addEventListener('click', ()=>{
     optionsInMenu = 1;
     gameEnterBtn();
 
 })
-uiBtnBack.addEventListener('click', function(){
+uiBtnBack.addEventListener('click', ()=>{
     inOptions = false;
     inMenu = true;
     clearScreen();
 })
 
-btnBGB.addEventListener('click', function(){
+btnBGB.addEventListener('click', ()=>{
     if(inOptions){
         inOptions = false;
     inMenu = true;
@@ -654,7 +617,7 @@ btnBGB.addEventListener('click', function(){
     }
     
 })
-btnB.addEventListener('click', function(){
+btnB.addEventListener('click', ()=>{
     if(inOptions){
         inOptions = false;
     inMenu = true;
@@ -662,7 +625,7 @@ btnB.addEventListener('click', function(){
     }
     
 })
-btnAGB.addEventListener('click', function(){
+btnAGB.addEventListener('click', ()=>{
     if(inMenu){gameEnterBtn()}
     else if(inOptions){inOptions = false;
         inMenu = true;
@@ -671,8 +634,19 @@ btnAGB.addEventListener('click', function(){
             gameEnterBtn()
         }
 })
-
-
+let HiddenAssets = ()=>{
+    uiBtnLeftOption.style.visibility = 'hidden'
+    uiBtnRightOption.style.visibility = 'hidden'
+    uiBtnBack.style.visibility = "hidden"
+    allHiddenAssets();
+    
+}
+let BtnUiDisplay = () =>{
+    uiBtnOption.style.visibility= 'visible'
+    uiBtnStart.style.visibility= 'visible'
+    uiBtnOption.innerHTML = "Options"
+    uiBtnStart.innerHTML = "Start"
+}
 
 //GAME//
 GameEngine();
