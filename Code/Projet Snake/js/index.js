@@ -19,50 +19,18 @@ let inGame = false;
 let inGameOver = false;
 let inPause = false;
 let inOptions = false;
+//let gameOver = false;
+
 
 //Menus Options Buttons
 let optionsInMenu = 0
 let optionsInOptions = 0
-
-//Snake head position
-let snakeHeadX = 10;
-let snakeHeadY = 10;
-
-//Snake Speed
-let xspeed = 0;
-let yspeed = 0;
-let accelerate = 1; 
-let saveSpeed  = [];
-let inMove = false;
 let canTouch = false;
   
-//Snake tail 
-let snakeTail = [];
-let tailLength ;
-class SnakeTailPart {
-    constructor(x,y,){
-        this.x=x;
-        this.y=y;
-    }
-}
-//Food Item
-class FoodItem {
-    constructor (x, y){
-        this.x = x;
-        this.y = y;
-    }
-    rndFoodPosition(){
-        this.x = rndFunction(tileCount);
-        this.y= rndFunction(tileCount);
-    }
-}
-let redFood = new FoodItem();
-
 //Score
 let score = 0;
 
 //Button creation for Nokia
-//const btnNokia= document.querySelector('.NokiaButtons')
 const btnUp = document.querySelector('.upArrow')
 const btnDown = document.querySelector('.downArrow')
 const btnLeft = document.querySelector('.leftArrow')
@@ -71,7 +39,6 @@ const btnStart = document.querySelector('.startBtn')
 const btnB = document.querySelector('.Bbtn')
 
 //Button creation for GameBoy
-//const btnGameBoy= document.querySelector('.GameBoyButtons')
 const btnUpGB = document.querySelector('.upArrowGB')
 const btnDownGB = document.querySelector('.downArrowGB')
 const btnLeftGB = document.querySelector('.leftArrowGB')
@@ -93,16 +60,21 @@ const uiBtnLeftOption = document.querySelector('.leftOption')
 let optionBackgroundNumber = 0;
 
 //Import imageInfo
-import { gameboyMode } from "./emulator.js"
-import { nokiaMode } from "./emulator.js"
-import { gameboyModeInOptions} from "./emulator.js"
-import { nokiaModeInOptions} from "./emulator.js"
-import { noneModeInOptions} from "./emulator.js"
-//import { allDisplayAssets } from "./emulator.js"
-import { allHiddenAssets } from "./emulator.js"
+import { GameboyMode } from "./emulator.js"
+import { NokiaMode } from "./emulator.js"
+import { GameboyModeInOptions} from "./emulator.js"
+import { NokiaModeInOptions} from "./emulator.js"
+import { NoneModeInOptions} from "./emulator.js"
+import { AllHiddenAssets } from "./emulator.js"
+import { SnakeTailPart } from "./snakeClass.js";
+import {FoodItem} from "./fruitClass.js";
+
+//Snake & Fruit class
+let snakeTailPart = new SnakeTailPart()
+let fruitItem = new FoodItem()
  
 // Basic Random funciton with arrow
-const rndFunction = a => Math.floor(Math.random()*a)
+const RndFunction = a => Math.floor(Math.random()*a)
 
 //GameEngine : update, check position adn colission, and draw objects
 let GameEngine = ()=>{
@@ -123,10 +95,9 @@ let GameEngine = ()=>{
         inMenu = false;
         inGame = true; 
 
-        snakePosition();    
-        checkCollision(redFood.x, redFood.y);
-        //clearScreen();
-        let result = isGameOver();
+        snakeTailPart.SnakePosition();
+        CheckCollision(fruitItem.x, fruitItem.y);
+        let result = IsGameOver();
 
         if(result){
             inGame = false
@@ -134,16 +105,21 @@ let GameEngine = ()=>{
             startingGame = false;
             return;
         }       
-        clearScreen(); 
-        drawSnake();
-        drawFood();
-        drawScore();   
+        ClearScreen(); 
+        snakeTailPart.DrawSnake(inPause, ctx, tileCount, titleSize);
+        fruitItem.DrawFood(ctx, tileCount, titleSize);
+        DrawScore(); 
+
+        if(inPause){
+            ctx.fillStyle = "white";
+            ctx.font="40px 'Press Start 2P'";
+            ctx.fillText("Pause",canvas.clientWidth/4, canvas.clientHeight/2 );
+        }  
     }
     //Rendering
     setTimeout(GameEngine, 1000/speedUpdate);
     canTouch=true;
 }
-
 //Menu's elements
 let Menu =()=>
 {
@@ -162,18 +138,11 @@ let Menu =()=>
     ctx.font="25px 'Press Start 2P'";
     ctx.fillText("J-Snake", canvas.clientWidth/4+7, canvas.clientHeight/2);
     
-    //Initialization du snake values
-    snakeTail = [];
-    tailLength = 2;
-    snakeHeadX = 10;
-    snakeHeadY = 10;
-    redFood.rndFoodPosition();
-    yspeed = 0;
-    xspeed = 0;
+    snakeTailPart.SnakeOrigin();
+    fruitItem.RndFoodPosition(tileCount);
 
     //Score Value
     score = 0;    
-
 
 }
 //Options's elements
@@ -191,46 +160,48 @@ let Options = () =>{
 
     if (optionBackgroundNumber == 0){
 
-        noneModeInOptions(); 
+        NoneModeInOptions(); 
     }
     else if(optionBackgroundNumber == 1){
-        gameboyModeInOptions()
+        GameboyModeInOptions()
     }
     else if (optionBackgroundNumber == 2){
-        nokiaModeInOptions() 
+        NokiaModeInOptions() 
     }
-    else{}
-
+    else{
+        //New Cntroller
+    }
 }
-
 //GameOver system. Is active when the snake touch a wall or himself
-let isGameOver = ()=>{
+let IsGameOver = ()=>{
     let gameOver = false;
 
-    if (yspeed ==0 && xspeed ==0){
+    if (snakeTailPart.yspeed ==0 && snakeTailPart.xspeed ==0){
         return false;
     }
-    if (snakeHeadX<0){
+    if (snakeTailPart.snakeHeadX<0){
         gameOver=true;
     }
-    else if (snakeHeadY==tileCount){
+    else if (snakeTailPart.snakeHeadY==tileCount){
         gameOver=true;
     }
-    else if (snakeHeadX==tileCount){
+    else if (snakeTailPart.snakeHeadX==tileCount){
         gameOver=true;
     }
-    else if (snakeHeadY<0){
+    else if (snakeTailPart.snakeHeadY<0){
         gameOver=true;
     }
+
     //Detection if is toching himself
-    snakeTail.forEach((SnakeTailPart, i)=>{
-        if(snakeTail[i].x==snakeHeadX && snakeTail[i].y ==snakeHeadY){
-            gameOver=true;
+    snakeTailPart.snakeTail.forEach((SnakeTailPart, i)=>{
+        if(snakeTailPart.snakeTail[i].x==snakeTailPart.snakeHeadX && snakeTailPart.snakeTail[i].y ==snakeTailPart.snakeHeadY){
+            gameOver = true
         }
     })
+
     //Message "Game Over"
     if (gameOver){
-        drawScore();
+        DrawScore();
         ctx.fillStyle = "white";
         ctx.font="40px 'Press Start 2P'";
         ctx.fillText("Game Over!",8, canvas.clientHeight/2);
@@ -241,84 +212,73 @@ let isGameOver = ()=>{
     }
     return gameOver;
 }
-
 //Mode Pause elements
-let pauseMode = () =>{
-    saveSpeed[0]=xspeed
-    saveSpeed[1]=yspeed
-    xspeed = 0;
-    yspeed = 0;
-    inMove = false;
+let PauseMode = () =>{
     canTouch= false
+    snakeTailPart.SnakePauseMode();
+    ctx.fillStyle = "white";
+    ctx.font="40px 'Press Start 2P'";
+    ctx.fillText("Pause",canvas.clientWidth/4, canvas.clientHeight/2 );
 
 }
-
 //Movement controllers function
-let movement = (direction)=>{
+let Movement = (direction)=>{
     //Up
-    inMove = true;
+    snakeTailPart.inMove = true;
     if(canTouch && !inPause){
     if (direction == 0){
-        if(yspeed==1)
+        if(snakeTailPart.yspeed==1)
         return;
-        xspeed = 0;
-        yspeed = -1;
+        snakeTailPart.xspeed = 0;
+        snakeTailPart.yspeed = -1;
     }
     //Down
     else if(direction == 1)
     {
-        if(yspeed==-1)
+        if(snakeTailPart.yspeed==-1)
         return;
-        xspeed = 0;
-        yspeed = 1;
+        snakeTailPart.xspeed = 0;
+        snakeTailPart.yspeed = 1;
     }
     //Left
     else if(direction==2){
-        if(xspeed==1)
+        if(snakeTailPart.xspeed==1)
         return;
-        xspeed = -1;
-        yspeed = 0;
+        snakeTailPart.xspeed = -1;
+        snakeTailPart.yspeed = 0;
     }
     //Right
     else {
-        if(xspeed==-1)
+        if(snakeTailPart.xspeed==-1)
         return;
-        xspeed = 1;
-        yspeed = 0;
+        snakeTailPart.xspeed = 1;
+        snakeTailPart.yspeed = 0;
     }
     canTouch = false;
 }
 }
-
-
 //Collision system for the food 
-let checkCollision = (...positionInfo) =>{
-    snakeTail.forEach((SnakeTailPart, i )=>{
-        if(snakeTail[i].x==redFood.x && snakeTail[i].y ==redFood.y){
+let CheckCollision = (...positionInfo) =>{
+    snakeTailPart.snakeTail.forEach((SnakeTailPart, i )=>{
+        if(snakeTailPart.snakeTail[i].x==fruitItem.x && snakeTailPart.snakeTail[i].y ==fruitItem.y){
             
-           
-            redFood.rndFoodPosition();
+            fruitItem.RndFoodPosition(tileCount);
         }
+        
     })
-    if (redFood.x == snakeHeadX && redFood.y == snakeHeadY)
+    if (fruitItem.x == snakeTailPart.snakeHeadX && fruitItem.y == snakeTailPart.snakeHeadY)
     {
-        redFood.rndFoodPosition();
-        tailLength++;
+        fruitItem.RndFoodPosition(tileCount);
+        snakeTailPart.tailLength++;
         score++;
         positionInfo.forEach((info, e)=>{
             console.log(info)
         })
     }
+    
 }
-
-//Update snake position
-let snakePosition = ()=>{
-    snakeHeadX+= accelerate*xspeed;
-    snakeHeadY+=accelerate*yspeed;
-}
-
 //Change button's colors
-let changeButtonMenu = () =>{
+let ChangeButtonMenu = () =>{
     if(optionsInMenu==0 ){
         optionsInMenu = 1;
         uiBtnOption.style.borderColor = "greenyellow"
@@ -335,11 +295,10 @@ let changeButtonMenu = () =>{
         uiBtnOption.style.borderColor = "black"
     }
 }
-
 //Action to button or key function to change the menu 
-let gameEnterBtn = ()=>{
+let GameEnterBtn = ()=>{
     if (inMenu){
-        clearScreen();
+        ClearScreen();
        
         if(optionsInMenu ==0){
             startingGame = true;
@@ -347,7 +306,7 @@ let gameEnterBtn = ()=>{
         else{
             inOptions = true;
         inMenu =false;
-        gameEnterBtn();
+        GameEnterBtn();
         }
         uiBtnOption.style.visibility= 'hidden'
         uiBtnStart.style.visibility= 'hidden'
@@ -355,29 +314,28 @@ let gameEnterBtn = ()=>{
     if(inGame){
         //Pause Condition
         if (!inPause){
-            setTimeout(pauseMode, 1)
+            setTimeout(PauseMode, 1)
             inPause = true;
         }
         else{
             inPause = false;
-            xspeed = saveSpeed[0]
-            yspeed = saveSpeed[1]
-            inMove = true;
-            //speedUpdate = 6;
+            snakeTailPart.xspeed = snakeTailPart.saveSpeed[0]
+            snakeTailPart.yspeed = snakeTailPart.saveSpeed[1]
+            snakeTailPart.inMove = true;
         }
     }
     if (inGameOver)
     {
         if(optionsInMenu==1){
-            clearScreen();
+            ClearScreen();
         inMenu= true;
         inGameOver = false;
         GameEngine();
         }
         else{
-            clearScreen();
+            ClearScreen();
             Menu();
-            clearScreen();
+            ClearScreen();
             uiBtnOption.style.visibility= 'hidden'
             uiBtnStart.style.visibility= 'hidden'
 
@@ -387,64 +345,22 @@ let gameEnterBtn = ()=>{
         }
     }
     if(inOptions){
-        clearScreen();
+        ClearScreen();
         uiBtnOption.style.visibility= 'hidden'
         uiBtnStart.style.visibility= 'hidden'
     }
 }
-
-
 //Clear the board game
-let clearScreen = ()=>{
+let ClearScreen = ()=>{
     ctx.fillStyle = 'green';
     ctx.fillRect(0,0,canvas.clientWidth*2, canvas.clientHeight*2);
 }
-//Display snake and his tail
-let drawSnake = ()=>{
-    if (inPause){        
-        ctx.fillStyle="orange";
-        
-        snakeTail.forEach((SnakeTailPart, i)=>{
-            ctx.fillRect(SnakeTailPart = snakeTail[i].x *tileCount, SnakeTailPart = snakeTail[i].y*tileCount, titleSize, titleSize)
-
-        })
-        if (snakeTail.length>tailLength){
-            snakeTail.pop();
-        }
-        ctx.fillStyle = "white";
-        ctx.font="40px 'Press Start 2P'";
-        ctx.fillText("Pause",canvas.clientWidth/4, canvas.clientHeight/2 );
-
-    }
-    else{
-        ctx.fillStyle="orange";
-        if(inMove){
-            snakeTail.unshift(new SnakeTailPart(snakeHeadX, snakeHeadY));
-
-            if (snakeTail.length>tailLength){
-                snakeTail.pop();
-            }
-        }         
-        snakeTail.forEach((SnakeTailPart, i)=>{
-            ctx.fillRect(SnakeTailPart = snakeTail[i].x *tileCount, SnakeTailPart = snakeTail[i].y*tileCount, titleSize, titleSize)
-        })
-    }        
-    //Draw the snake haed
-    ctx.fillStyle="yellow";
-    ctx.fillRect(snakeHeadX*tileCount, snakeHeadY*tileCount, titleSize, titleSize);
-}
-//Display food 
-let drawFood=()=>{
-    ctx.fillStyle="red";
-    ctx.fillRect(redFood.x*tileCount, redFood.y*tileCount, titleSize, titleSize);
-}
 //Display Score
-let drawScore=()=>{
+let DrawScore=()=>{
     ctx.fillStyle="white";
     ctx.font ="20px 'Press Start 2P'";
     ctx.fillText("Score : " + score, canvas.clientWidth-canvas.clientWidth/2-100 ,30);
 }
-
 //Input controls key function
 document.body.addEventListener('keydown', keyDown);
 function keyDown(event)
@@ -452,15 +368,15 @@ function keyDown(event)
     if(!inPause && canTouch){
         //Up with arrow or W
         if(event.keyCode==38 || event.keyCode==87 ){
-            movement(0)
+            Movement(0)
         }
     //Down with arrow or S
         if(event.keyCode==40 || event.keyCode==83){
-            movement(1)
+            Movement(1)
         }
     //Left with arrow or A
         if(event.keyCode==37 || event.keyCode==65){
-            if(!inOptions){movement(2)}
+            if(!inOptions){Movement(2)}
             else{
                 optionBackgroundNumber--;
                 uiBtnLeftOption.style.borderColor = "greenyellow"
@@ -474,7 +390,7 @@ function keyDown(event)
         }
     //Right with arrow or D
         if(event.keyCode==39|| event.keyCode==68){
-            if(!inOptions){movement(3)}
+            if(!inOptions){Movement(3)}
             else
             {
                 optionBackgroundNumber++;
@@ -493,26 +409,26 @@ function keyDown(event)
     }
     //Enter o Space key
    if (event.keyCode==32 ||event.keyCode==13 ){
-    if(!inOptions){gameEnterBtn();}
+    if(!inOptions){GameEnterBtn();}
     else{ inOptions = false;
         inMenu = true;
-        clearScreen();}
+        ClearScreen();}
    }
    //ChangeDeMenu
    if(inMenu){
     if(event.keyCode==38 || event.keyCode==87 ){
-        changeButtonMenu()
+        ChangeButtonMenu()
     }
     if(event.keyCode==40 || event.keyCode==83){
-        changeButtonMenu()
+        ChangeButtonMenu()
     }    
    }
    else if(inGameOver){
     if(event.keyCode==38 || event.keyCode==87 ){
-        changeButtonMenu()
+        ChangeButtonMenu()
     }
     if(event.keyCode==40 || event.keyCode==83){
-        changeButtonMenu()
+        ChangeButtonMenu()
     }
    }
 }
@@ -533,33 +449,43 @@ uiBtnRightOption.addEventListener('click', ()=>{
 
 btnUp.addEventListener('click', ()=>{
     if (inGame){
-        movement(0)}
+        Movement(0)}
     else if (inMenu ||inGameOver){
-        changeButtonMenu()
+        ChangeButtonMenu()
     }
 })
 btnDown.addEventListener('click', ()=>{
-    movement(1)
+    Movement(1)
 })
 btnLeft.addEventListener('click', ()=>{
-    movement(2)
+    Movement(2)
+    if(inOptions){
+        optionBackgroundNumber--;
+    if(optionBackgroundNumber <0){
+        optionBackgroundNumber = 2;
+    }
+    }
 
 })
 btnRight.addEventListener('click', ()=>{
-    movement(3)
+    Movement(3)
+    if(inOptions){optionBackgroundNumber++;
+    if(optionBackgroundNumber >2){
+        optionBackgroundNumber = 0;
+    }}
 
 })
 btnStart.addEventListener('click', ()=>{
 
-    if(inMenu){gameEnterBtn()}
+    if(inMenu){GameEnterBtn()}
     else if(inOptions){inOptions = false;
         inMenu = true;
-        clearScreen();}
+        ClearScreen();}
         else if (inGameOver){
-            gameEnterBtn()
+            GameEnterBtn()
         }
         else{
-            gameEnterBtn();
+            GameEnterBtn();
 
         }
 
@@ -567,53 +493,64 @@ btnStart.addEventListener('click', ()=>{
 
 btnUpGB.addEventListener('click', ()=>{
     if (inGame){
-        movement(0)}
+        Movement(0)}
     else if (inMenu ||inGameOver){
-        changeButtonMenu()
+        ChangeButtonMenu()
     }
     
 })
 btnDownGB.addEventListener('click', ()=>{
     if (inGame){
-        movement(1)}
+        Movement(1)}
     else if (inMenu ||inGameOver){
-        changeButtonMenu()
+        ChangeButtonMenu()
     }
 })
 btnLeftGB.addEventListener('click', ()=>{
-    movement(2)
+    Movement(2)
+    if(inOptions){optionBackgroundNumber--;
+    if(optionBackgroundNumber <0){
+        optionBackgroundNumber = 2;
+    }}
 
 })
 btnRightGB.addEventListener('click', ()=>{
-    movement(3)
+    Movement(3)
+    if(inOptions){
+        optionBackgroundNumber++;
+    if(optionBackgroundNumber >2){
+        optionBackgroundNumber = 0;
+    }
+        
+    }
 
 })
 btnStartGB.addEventListener('click', ()=>{
-    gameEnterBtn();
+    GameEnterBtn();
 
 })
 
 uiBtnStart.addEventListener('click', ()=>{       
     optionsInMenu = 0;
-    gameEnterBtn();    
+    GameEnterBtn();    
 })
 
 uiBtnOption.addEventListener('click', ()=>{
     optionsInMenu = 1;
-    gameEnterBtn();
+    GameEnterBtn();
 
 })
 uiBtnBack.addEventListener('click', ()=>{
     inOptions = false;
     inMenu = true;
-    clearScreen();
+    ClearScreen();
 })
 
 btnBGB.addEventListener('click', ()=>{
     if(inOptions){
         inOptions = false;
     inMenu = true;
-    clearScreen();
+    ClearScreen();
     }
     
 })
@@ -621,24 +558,24 @@ btnB.addEventListener('click', ()=>{
     if(inOptions){
         inOptions = false;
     inMenu = true;
-    clearScreen();
+    ClearScreen();
     }
     
 })
 btnAGB.addEventListener('click', ()=>{
-    if(inMenu){gameEnterBtn()}
+    if(inMenu){GameEnterBtn()}
     else if(inOptions){inOptions = false;
         inMenu = true;
-        clearScreen();}
+        ClearScreen();}
         else if (inGameOver){
-            gameEnterBtn()
+            GameEnterBtn()
         }
 })
 let HiddenAssets = ()=>{
     uiBtnLeftOption.style.visibility = 'hidden'
     uiBtnRightOption.style.visibility = 'hidden'
     uiBtnBack.style.visibility = "hidden"
-    allHiddenAssets();
+    AllHiddenAssets();
     
 }
 let BtnUiDisplay = () =>{

@@ -8,29 +8,12 @@ body{
     align-items: center;
     background-color: black;
 }
-canvas{
-    /* CANVAS GAMEBOY COLORS
-    position: absolute;
-    box-shadow: green  0px 0px 100px;
-    background-color: green;
-    margin-top: -4.5%;
-    width: 21%;
-    */
-    
-    /*Nokia Canvas
-    position: absolute;
-    box-shadow: green  0px 0px 100px;
-    background-color: green;
-    left: 26.2%;
-    width: 21%;
-    */
-    
+canvas{   
     box-shadow: green  0px 0px 100px;
     background-color: green;
     position: absolute;
     top:20%;
     width: 20% ;
-
 }
 img.imgGameBoy{
     position: absolute;
@@ -40,8 +23,6 @@ img.imgGameBoy{
 }
 img.imgNokia{
     position: absolute;
-
-    /*width: 100%;*/
     visibility: hidden;
     top:-1%;
     left:15.25%;
@@ -55,109 +36,42 @@ div.NokiaButtons{
     visibility: hidden;
 }
 button.upArrow{
-    /* GameboyBtn
-    background-color: transparent;
-    border-color: transparent;
-
-    top : 26.5%;
-    left: 20.75%;
-    width: 3.5%;
-    height: 7%;
-    */
-
     background-color: transparent;
     border-color: transparent;
     border-radius: 25%;
-
-
     top : 9%;
     left: 82.5%;
     width: 6%;
     height: 17.5%;
-
-
 }
 button.leftArrow{
-    /* GameboyBtn
-    background-color: transparent;
-    border-color: transparent;
-
-    top : 33%;
-    left: 17.5%;
-    width: 3.5%;
-    height: 7%;
-    */
-
     background-color: transparent;
     border-color: transparent;
     border-radius: 25%;
-
-
     top : 33%;
     left: 77.5%;
     width: 6%;
     height: 17.5%;
-
-
 }
 button.rightArrow{
-    /*GameboyBtn
-
-    background-color: transparent;
-    border-color: transparent;
-
-    top : 33%;
-    left: 24%;
-    width: 3.5%;
-    height: 7%;
-
-    */
     background-color: transparent;
     border-color: transparent;
     border-radius: 25%;
-
-
     top : 33%;
     left: 91%;
     width: 6%;
     height: 17.5%;
-
-
 }
 button.downArrow{
-    /* GameboyBtn
-    background-color: transparent;
-    top : 40%;
-    left: 20.75%;
-    width: 3.5%;
-    height: 7%;
-    border-color: transparent;
-
-    */
-
     background-color: transparent;
     border-color: transparent;
     border-radius: 25%;
-
-
     top : 55.5%;
     left: 82.5%;
     width: 6%;
     height: 17.5%;
-
 }
 button.startBtn{
-        /* GameboyBtn
-
-    background-color: transparent;
-    top : 55.5%;
-    left: 26.3%;
-    width: 2.5%;
-    height: 5.3%;
-    border-radius: 50%;
-    border-color: transparent;
-
-    */
     background-color: transparent;
     top : 24%;
     left: 63.75%;
@@ -165,19 +79,9 @@ button.startBtn{
     height: 35%;
     border-radius: 25%;
     border-color: transparent;
-
 }
 
 button.selectBtn{
-    /*GameboyBtn
-    background-color: transparent;
-    top : 64.5%;
-    left: 26.15%;
-    width: 2.5%;
-    height: 5.3%;
-    border-radius: 50%;
-    border-color: transparent;
-    */
     visibility: hidden;
 }
 button.UiStartMenu{
@@ -186,16 +90,12 @@ button.UiStartMenu{
     left: 45.25%;
     height: 5%;
     width: 10%;
-
-    
     border-color: greenyellow;
     background-color: transparent;
     font-family: 'Press Start 2P';
     color: greenyellow;
     background-color: green;
-
     visibility: visible;
-
 }
 button.UiOptionMenu{
     position: absolute;
@@ -208,7 +108,6 @@ button.UiOptionMenu{
     background-color: green;
     color: black;
     visibility: visible;
-
 }
 button.UiBackMenu{
     position: absolute;
@@ -224,7 +123,6 @@ button.UiBackMenu{
 }
 img.nokiaOption{
     position: absolute;
-    
     width: 15%;
     top: 35%;
     left: 42.5%;
@@ -232,7 +130,6 @@ img.nokiaOption{
 }
 img.gameboyOption{
     position: absolute;
-    
     width: 15%;
     top: 33%;
     left: 42.5%;
@@ -271,13 +168,11 @@ button.Bbtn{
 }
 div.backgroundName{
     position: absolute;
-
     font-family: 'Press Start 2P';
     font-size: 15px;
     top: 56.5%;
     left: 48.5%;
     visibility: hidden;
-
 }
 div.GameBoyButtons{
     visibility: hidden;
@@ -342,6 +237,5 @@ button.AbtnGB{
     height: 10%;
     border-radius: 50%;
     border-color: transparent;
-
 }
 

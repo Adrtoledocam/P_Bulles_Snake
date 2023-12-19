@@ -14,7 +14,7 @@ const btnNokia= document.querySelector('.NokiaButtons')
 
 
 //GameboyMode elements
-export let  gameboyMode = () =>{
+export let GameboyMode = () =>{
     imgBackgroundNokia.style.visibility = "hidden"
 
     imgBackgroundGameBoy.style.visibility = "visible";
@@ -24,12 +24,9 @@ export let  gameboyMode = () =>{
 
     btnNokia.style.visibility = "hidden"
     btnGameBoy.style.visibility = "visible"
-
-
-
 }
 //NokiaMode elements
-export let nokiaMode = ()=>{
+export let NokiaMode = ()=>{
  
     imgBackgroundNokia.style.visibility = "visible"
     imgBackgroundGameBoy.style.visibility = "hidden"
@@ -38,26 +35,24 @@ export let nokiaMode = ()=>{
 
 }
 
-export let gameboyModeInOptions = () => {
+export let GameboyModeInOptions = () => {
     imgOptionGameBoy.style.visibility = 'visible'
         imgOptionNokia.style.visibility = 'hidden'
         textBackgroundOption.style.visibility = 'visible'
-
         textBackgroundOption.innerHTML = "GB"
-        textBackgroundOption.style.left="49%"
-        
-        gameboyMode();
+        textBackgroundOption.style.left="49%"       
+        GameboyMode();
 }
-export let nokiaModeInOptions = () => {
+export let NokiaModeInOptions = () => {
     textBackgroundOption.style.visibility = 'visible'
 
     imgOptionGameBoy.style.visibility = 'hidden'
         imgOptionNokia.style.visibility = 'visible'
         textBackgroundOption.innerHTML = "Nokia"
         textBackgroundOption.style.left="48%"
-        nokiaMode();
+        NokiaMode();
 }
-export let noneModeInOptions = () => {
+export let NoneModeInOptions = () => {
     textBackgroundOption.style.visibility = 'visible'
 
     imgOptionGameBoy.style.visibility = 'hidden'
@@ -70,12 +65,12 @@ export let noneModeInOptions = () => {
         btnNokia.style.visibility = "hidden"
     btnGameBoy.style.visibility = "hidden"
 }
-export let allHiddenAssets = () => {
+export let AllHiddenAssets = () => {
     imgOptionGameBoy.style.visibility = 'hidden'
     imgOptionNokia.style.visibility = 'hidden'
     textBackgroundOption.style.visibility = 'hidden'
 }
-export let allDisplayAssets = () => {
+export let AllDisplayAssets = () => {
     imgOptionGameBoy.style.visibility = 'visible'
     imgOptionNokia.style.visibility = 'visible'
     textBackgroundOption.style.visibility = 'visible'
