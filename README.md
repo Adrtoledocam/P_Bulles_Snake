@@ -19,4 +19,4 @@ Profitez du jeu complet en changeant l'arrière-plan et le contrôle avec le cé
 
 Record personnel : 28 points
 <br>
-Meilleur record : 33 points - Philippe Heijkoop
+Meilleur record : 64 points - Aurélie Curchod
