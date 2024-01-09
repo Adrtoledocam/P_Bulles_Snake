@@ -10,10 +10,13 @@ Une fois installé, vous devez utiliser un programme capable d'accéder au répe
 
 Une fois le jeu lancé, vous devez démarrer le jeu en plein écran. 
 <br>
+
 Pour contrôler le jeu, vous pouvez utiliser les touches fléchées, WASD, ou en cliquant sur l'élément désiré. 
 <br>
+
 Profitez du jeu complet en changeant l'arrière-plan et le contrôle avec le célèbre Nokia 3310 et le GameBoy Advance.
 <br>
+
 Record personnel : 28 points
 <br>
 Meilleur record : 33 points - Philippe Heijkoop
