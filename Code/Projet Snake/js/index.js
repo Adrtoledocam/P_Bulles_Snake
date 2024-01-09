@@ -353,7 +353,7 @@ let GameEnterBtn = ()=>{
 //Clear the board game
 let ClearScreen = ()=>{
     ctx.fillStyle = 'green';
-    ctx.fillRect(0,0,canvas.clientWidth*2, canvas.clientHeight*2);
+    ctx.fillRect(0,0,canvas.clientWidth*20, canvas.clientHeight*20);
 }
 //Display Score
 let DrawScore=()=>{
